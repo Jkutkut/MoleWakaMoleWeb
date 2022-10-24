@@ -3,7 +3,8 @@ const path = require('path');
 const fs = require('fs');
 
 const root = path.dirname(require.main.filename);
-console.log(root);
+
+const API42 = require('./API42.js');
 
 const handleRequest = (req, res) => {
     let attributes = req.url.split('?');
@@ -42,6 +43,12 @@ const handleRequest = (req, res) => {
     }
     else if (url === "/app") {
         // TODO token not generated yet
+        let params = attributes[1].split("&");
+        let code = params[0].split("=");
+        let clientToken = code[1];
+        console.log("clientToken:", clientToken);
+        let token = API42.getToken(clientToken);
+        console.log("token:", token);
         res.writeHead(200, {
             'Content-Type': 'text/html'
         });
@@ -54,18 +61,14 @@ const handleRequest = (req, res) => {
     }
 }
 
-class API42 {
-
-    static CLIENT_ID;
-
-    static getAuthUrl() {
-        return "https://api.intra.42.fr/oauth/authorize?client_id=" + this.CLIENT_ID + "&redirect_uri=http%3A%2F%2F127.0.0.1%2Fapp&response_type=code"
-    }
-}
-
-fs.readFile(root + "/.secretClientId", (err, data) => {
+fs.readFile(root + "/.secrets", (err, data) => {
     if (err) throw err;
-    API42.CLIENT_ID = data;
+    data = data.toString();
+    let keys = data.split("\n");
+    for (let i = 0, key; i < keys.length; i++) {
+        key = keys[i].split('=');
+        API42[key[0]] = key[1];
+    }
 });
 
 const server = http.createServer(handleRequest);

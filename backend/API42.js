@@ -1,6 +1,20 @@
 class API42 {
     URL = "https://api.intra.42.fr/";
     MAX_PAGE_SIZE = 100;
+    static UID;
+    static SECRET;
+
+    static getAuthUrl() {
+        return "https://api.intra.42.fr/oauth/authorize?client_id=" + this.UID + "&redirect_uri=http%3A%2F%2F127.0.0.1%2Fapp&response_type=code"
+    }
+
+
+    static getToken(clientToken) {
+        return this._post(
+            "/oauth/token",
+            `grant_type=authorization_code&client_id=${this.UID}&client_secret=${this.SECRET}&code=${clientToken}`
+        );
+    }
 
     constructor(token) {
         this._token = token;
@@ -39,4 +53,22 @@ class API42 {
         });
         return response;
     }
+
+    post(url, data, headers = {}) {
+        // TODO
+    }
+
+    static async _post(url, data, headers = {}) {
+        const response = await fetch(url,
+            {
+                method: "POST",
+                headers: headers,
+                data: data,
+                mode: "no-cors"
+            }
+        ).then(response => response.json());
+        return response;
+    }
 }
+
+module.exports = API42;
