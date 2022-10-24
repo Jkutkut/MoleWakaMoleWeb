@@ -9,16 +9,19 @@ class API42 {
     }
 
 
-    static getToken(clientToken) {
+    getToken(clientToken) {
         return this._post(
-            "/oauth/token",
+            this.formatUrl("/oauth/token"),
             `grant_type=authorization_code&client_id=${this.UID}&client_secret=${this.SECRET}&code=${clientToken}`
         );
     }
 
-    constructor(token) {
-        this._token = token;
+    constructor() {
+
     }
+    // constructor(token) {
+    //     // this._token = token;
+    // }
 
     get basicHeader() {
         return {
@@ -58,15 +61,18 @@ class API42 {
         // TODO
     }
 
-    static async _post(url, data, headers = {}) {
-        const response = await fetch(url,
+    async _post(fullURL, data, headers = {}) {
+        console.log("full url:", fullURL);
+        const response = await fetch(fullURL,
             {
                 method: "POST",
                 headers: headers,
                 data: data,
-                mode: "no-cors"
+                // mode: "no-cors"
             }
-        ).then(response => response.json());
+        ).then(response => {
+            console.log("token:", response);
+        });
         return response;
     }
 }

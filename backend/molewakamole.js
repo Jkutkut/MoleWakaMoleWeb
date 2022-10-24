@@ -47,7 +47,9 @@ const handleRequest = (req, res) => {
         let code = params[0].split("=");
         let clientToken = code[1];
         console.log("clientToken:", clientToken);
-        let token = API42.getToken(clientToken);
+        // let token = API42.getToken(clientToken);
+        let api = new API42();
+        let token = api.getToken(clientToken);
         console.log("token:", token);
         res.writeHead(200, {
             'Content-Type': 'text/html'
