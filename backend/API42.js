@@ -1,3 +1,6 @@
+const https = require('https');
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
 class API42 {
     URL = "https://api.intra.42.fr/";
     MAX_PAGE_SIZE = 100;
@@ -5,22 +8,39 @@ class API42 {
     static SECRET;
 
     static getAuthUrl() {
-        return "https://api.intra.42.fr/oauth/authorize?client_id=" + this.UID + "&redirect_uri=http%3A%2F%2F127.0.0.1%2Fapp&response_type=code"
+        return API42.URL + "oauth/authorize?client_id=" + API42.UID + "&redirect_uri=http%3A%2F%2F127.0.0.1%2Fapp&response_type=code"
     }
 
 
     async getToken(clientToken) {
-        return this.post(
-            "/oauth/token",
-            {
-                grant_type: "authorization_code",
-                client_id: API42.UID,
-                client_secret: API42.SECRET,
-                code: clientToken,
-                redirect_uri: "",
-                state: "random_state"
-            }
-        );
+        /*const formData = new FormData();
+
+        formData.append("grant_type", "authorization_code");
+        formData.append("client_id",  API42.UID);
+        formData.append("client_secret", API42.SECRET);
+        formData.append("code", clientToken);
+        formData.append("redirect_uri", "http://127.0.0.1/app");*/
+
+        const request = new XMLHttpRequest();
+        request.open("POST", API42.URL + "oauth/token");
+        request.send(`grant_type=authorization_code&client_id=${API42.UID}&client_secret=${API42.SECRET}&code=${clientToken}&redirect_uri=http%3A%2F%2F127.0.0.1%2callback`);
+
+        request.addEventListener("readystatechange", (event) => {
+            console.log(request);
+        })
+        
+        // return this.post(
+        //     "oauth/token",
+        //     {
+        //         grant_type: "authorization_code",
+        //         client_id: API42.UID,
+        //         client_secret: API42.SECRET,
+        //         code: clientToken,
+        //         redirect_uri: "http://127.0.0.1/app",
+        //         // state: "random_state"
+        //     }
+        //     // `grant_type=authorization_code&client_id=${API42.UID}&client_secret=${API42.SECRET}&code=${clientToken}&redirect_uri=http%3A%2F%2F127.0.0.1%2callback`
+        // );
     }
 
     constructor() {
@@ -78,17 +98,22 @@ class API42 {
         console.log("data:", data);
         console.log("headers:", headers);
         console.log("***************************");
+        
         return fetch(fullURL,
             {
                 method: "POST",
                 // headers: headers,
                 // data: JSON.stringify(data),
                 data: data,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                // headers: {
+                //     'Content-Type': 'application/json'
+                // }
             }
-        );
+        ).then(response => {
+            console.log("response:", response);
+        }).catch(error => {
+            console.log("error:", error);
+        });
 
     }
 }

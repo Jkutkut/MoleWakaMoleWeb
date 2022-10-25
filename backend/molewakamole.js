@@ -48,15 +48,22 @@ const handleRequest = async (req, res) => {
         let clientToken = code[1];
         // console.log("clientToken:", clientToken);
         let api = new API42();
-        api.getToken(clientToken).then(response => {
-            console.log("token:", response);
-            console.log("status:", response.status);
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
-            res.write("<h1>App</h1>" + response.state);
-            res.end();
+        api.getToken(clientToken)
+        // .then(response => {
+        //     console.log("token:", response);
+        //     console.log("status:", response.status);
+        //     res.writeHead(200, {
+        //         'Content-Type': 'text/html'
+        //     });
+        //     res.write("<h1>App</h1>" + response.state);
+        //     res.end();
+        // });
+
+        res.writeHead(200, {
+            'Content-Type': 'text/html'
         });
+        res.write("<h1>App</h1>");
+        res.end();
     }
     else { // Default response
         res.writeHead(200, {'Content-Type': 'text/plain'});
