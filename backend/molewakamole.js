@@ -6,7 +6,7 @@ const root = path.dirname(require.main.filename);
 
 const API42 = require('./API42.js');
 
-const handleRequest = (req, res) => {
+const handleRequest = async (req, res) => {
     let attributes = req.url.split('?');
     let url = attributes[0];
     console.log("Incoming request: '" + url + "'");
@@ -46,16 +46,17 @@ const handleRequest = (req, res) => {
         let params = attributes[1].split("&");
         let code = params[0].split("=");
         let clientToken = code[1];
-        console.log("clientToken:", clientToken);
-        // let token = API42.getToken(clientToken);
+        // console.log("clientToken:", clientToken);
         let api = new API42();
-        let token = api.getToken(clientToken);
-        console.log("token:", token);
-        res.writeHead(200, {
-            'Content-Type': 'text/html'
+        api.getToken(clientToken).then(response => {
+            console.log("token:", response);
+            console.log("status:", response.status);
+            res.writeHead(200, {
+                'Content-Type': 'text/html'
+            });
+            res.write("<h1>App</h1>" + response.state);
+            res.end();
         });
-        res.write("<h1>App</h1>");
-        res.end();
     }
     else { // Default response
         res.writeHead(200, {'Content-Type': 'text/plain'});

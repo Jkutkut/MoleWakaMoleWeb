@@ -9,10 +9,17 @@ class API42 {
     }
 
 
-    getToken(clientToken) {
-        return this._post(
-            this.formatUrl("/oauth/token"),
-            `grant_type=authorization_code&client_id=${this.UID}&client_secret=${this.SECRET}&code=${clientToken}`
+    async getToken(clientToken) {
+        return this.post(
+            "/oauth/token",
+            {
+                grant_type: "authorization_code",
+                client_id: API42.UID,
+                client_secret: API42.SECRET,
+                code: clientToken,
+                redirect_uri: "",
+                state: "random_state"
+            }
         );
     }
 
@@ -57,23 +64,32 @@ class API42 {
         return response;
     }
 
-    post(url, data, headers = {}) {
-        // TODO
+    post(url, data={}, headers = {}) {
+        return this._post(
+            this.formatUrl(url),
+            data,
+            headers
+        );
     }
 
     async _post(fullURL, data, headers = {}) {
+        console.log("***************************");
         console.log("full url:", fullURL);
-        const response = await fetch(fullURL,
+        console.log("data:", data);
+        console.log("headers:", headers);
+        console.log("***************************");
+        return fetch(fullURL,
             {
                 method: "POST",
-                headers: headers,
+                // headers: headers,
+                // data: JSON.stringify(data),
                 data: data,
-                // mode: "no-cors"
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
-        ).then(response => {
-            console.log("token:", response);
-        });
-        return response;
+        );
+
     }
 }
 
