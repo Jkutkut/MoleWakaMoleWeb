@@ -1,0 +1,82 @@
+:root {
+    --c-black: #1a1a1a;
+    --c-white: #e1e1e1;
+    --c-grey: #898989;
+    --c-purple: #b462ff;
+    --c-fuschia: #ff45b4;
+    --c-blue: #18b6ff;
+    --c-green: #1beb9e;
+    --c-orange: #ff9528;
+    --c-yellow: #dddd25;
+
+
+    --font: 'IBM', monospace;
+    --line-height: 2.5ch;
+    --tab-size: 4;
+}
+
+body {
+    background-color: var(--c-black);
+
+    /* Font */
+    color: var(--c-white);
+    font-family: var(--font);
+    line-height: var(--line-height);
+    tab-size: var(--tab-size);
+}
+
+body > * {
+    margin: 0;
+    padding: 0;
+    word-wrap: break-word;
+}
+
+pre {
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.title {
+    line-height: 1.9ch;
+}
+
+/* Code */
+t {
+    color: var(--c-white);
+}
+
+ft {
+    color: var(--c-blue);
+}
+
+ft_name {
+    color: var(--c-green);
+}
+
+ft_arg {
+    color: var(--c-orange);
+}
+
+string {
+    color: var(--c-yellow);
+}
+
+return {
+    color: var(--c-fuschia);
+}
+
+number {
+    color: var(--c-purple);
+}
+
+comment {
+    color: var(--c-grey);
+}
+
+/* cmd */
+cmd {
+    color: var(--c-blue);
+}
