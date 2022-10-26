@@ -6,9 +6,8 @@ var router = express.Router();
 /* GET home page. */
 router.get('/',
     (req, res, next) => {
-        if (!req.user) { 
-            console.log('req.user is not defined');
-            return res.render('home');
+        if (!req.user) {
+            return res.render('login');
         }
         next();
     },

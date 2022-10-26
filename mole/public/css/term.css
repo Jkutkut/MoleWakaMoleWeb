@@ -11,6 +11,7 @@
 
 
     --font: 'IBM', monospace;
+    --font-color: var(--c-white);
     --line-height: 2.5ch;
     --tab-size: 4;
 }
@@ -41,6 +42,7 @@ pre {
 
 .title {
     line-height: 1.9ch;
+    white-space: pre;
 }
 
 /* Code */
