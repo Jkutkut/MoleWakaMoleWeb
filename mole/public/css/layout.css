@@ -1,11 +1,5 @@
-.full-height {
-    display: block;
-    overflow: auto;
-}
-
-.max-size {
-    width: 100vw;
-    height: 100vh;
+.big {
+    height: 50vh;
 }
 
 .center-container {
@@ -14,6 +8,7 @@
     align-items: center;
 }
 
+/* Login btn */
 .login {
     /* Properties */
     --btn-color-bg: var(--c-black);
