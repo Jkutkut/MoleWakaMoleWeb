@@ -7,7 +7,8 @@ var router = express.Router();
 router.get('/',
     (req, res, next) => {
         if (!req.user) {
-            return res.render('login');
+            // TODO add correct login url
+            return res.render('login', {API_LOGIN_URL: "https://github.com/jkutkut"});
         }
         next();
     },
