@@ -66,11 +66,11 @@ string {
     color: var(--c-yellow);
 }
 
-return {
+return, define_tag {
     color: var(--c-fuschia);
 }
 
-number {
+number, define {
     color: var(--c-purple);
 }
 
@@ -81,4 +81,14 @@ comment {
 /* cmd */
 cmd {
     color: var(--c-blue);
+}
+
+/* Override css */
+a, a:active, a:visited, a:link {
+    color: inherit;
+    text-decoration: none;
+}
+a:hover {
+    font-weight: bold;
+    font-style: italic;
 }
