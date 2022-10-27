@@ -5,21 +5,38 @@
     <link rel="stylesheet" href="/css/term.css">
     <link rel="stylesheet" href="/css/layout.css">
     <title>MoleWakaMoleWeb</title>
+
+    <script>
+        window.onload = () => {
+            document.getElementById("btnLogin").addEventListener("click", () => {
+                window.location = "";
+            });
+        }
+    </script>
 </head>
 <body>
-<div class="center-container">
-    <pre class="title">
+    <div class="title_container center-container">
+        <pre class="title"><!--CODE-->
 ███    ███  ██████  ██      ███████ ██     ██  █████  ██   ██  █████  ███    ███  ██████  ██      ███████
 ████  ████ ██    ██ ██      ██      ██     ██ ██   ██ ██  ██  ██   ██ ████  ████ ██    ██ ██      ██     
 ██ ████ ██ ██    ██ ██      █████   ██  █  ██ ███████ █████   ███████ ██ ████ ██ ██    ██ ██      █████  
 ██  ██  ██ ██    ██ ██      ██      ██ ███ ██ ██   ██ ██  ██  ██   ██ ██  ██  ██ ██    ██ ██      ██     
 ██      ██  ██████  ███████ ███████  ███ ███  ██   ██ ██   ██ ██   ██ ██      ██  ██████  ███████ ███████
-    </pre>
-</div>
-<div class="full-height">
-    <div class="center-container max-size">
-        <button class="login">Login</button>
+        </pre><!--END_CODE-->
     </div>
-</div>
+    <div class="full-height center-container">
+        <button id="btnLogin" class="login">Login</button>
+    </div>
+    <div class="center-container">
+        <a href="https://github.com/jkutkut" target="_blank" >
+            <pre><!--CODE-->
+<define_tag>#define</define_tag> <define>AUTHOR</define> <string>"Jkutkut"</string>
+<ft>int</ft>    <ft_name>main</ft_name>(<ft_arg>void</ft_arg>) {
+    printf(<string>"By: %s\n"</string>, <number>AUTHOR</number>);
+    <return>return</return> (<define>SUCCESS</define>);
+}
+            </pre><!--END_CODE-->
+        </a>
+    </div>
 </body>
 </html>
