@@ -12,7 +12,7 @@
 .login {
     /* Properties */
     --btn-color-bg: var(--c-black);
-    --btn-width: 50vw;
+    --btn-width: 25vw;
     --btn-border-radius-small: calc(var(--btn-width) / 15);
     --btn-border-radius-large: calc(var(--btn-width) / 5);
 

@@ -5,11 +5,11 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 // var session = require('express-session');
-// var passport = require('passport');
+var passport = require('passport');
 
 // ***** CODE *****
 const indexRouter = require('./routes/index');
-// const authRouter = require('./routes/auth');
+const authRouter = require('./routes/auth');
 const app = express();
 
 // app.locals.pluralize = require('pluralize');
@@ -38,8 +38,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 // }));
 // app.use(passport.authenticate('session'));
 
+const FortyTwoStrategy = require('passport-42').Strategy;
+
+passport.use(new FortyTwoStrategy({
+    clientID: process.env['CLIENT_ID'],
+    clientSecret: process.env['CLIENT_SECRET'],
+    callbackURL: process.env['AUTH_DOMAIN']
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ fortytwoId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
 app.use('/', indexRouter);
-// app.use('/', authRouter);
+app.use('/', authRouter);
 
 // // catch 404 and forward to error handler
 // app.use(function(req, res, next) {

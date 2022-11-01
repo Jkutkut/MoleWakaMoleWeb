@@ -1,3 +1,4 @@
 #!/bin/zsh
 
-PORT=3000 npm start
+npm start
+# PORT=3000 npm start
