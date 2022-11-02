@@ -19,9 +19,10 @@ window.onload = () =>  {
     });
 
     // When window is clicked, the inputTerm is focused
-    window.addEventListener('click', () => {
-        inputTerm.focus();
-    });
+    // document.getElementsByTagName('terminal')[0]
+    //         .addEventListener('click', () => {
+    //     inputTerm.focus();
+    // });
 
     inputTerm.focus();
 };

@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/Jkutkut/MoleWakaMoleWeb#readme",
   "dependencies": {
+    "client-oauth2": "^4.3.3",
     "connect-ensure-login": "^0.1.1",
     "cookie-parser": "^1.4.6",
+    "curl": "^0.1.4",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",

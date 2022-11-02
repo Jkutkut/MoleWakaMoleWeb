@@ -1,6 +1,6 @@
 // ********** Dependencies **********
 const express = require('express');
-const https = require('https');
+// const https = require('https');
 const path = require('path');
 require('dotenv').config();
 const logger = require('morgan');
@@ -94,6 +94,15 @@ app.get(
     '/login',
     passport.authenticate('42')
 );
+const curl = require('curl'); // TODO move to top
+const ClientOAuth2 = require('client-oauth2') // TODO move to top
+var auth = new ClientOAuth2({
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.SECRET,
+    accessTokenUri: 'https://api.intra.42.fr/oauth',
+    authorizationUri: 'https://api.intra.42.fr/oauth/token',
+    redirectUri: process.env.CALLBACK_URL
+});
 
 // TODO if login fails, loop may occur
 app.get(
@@ -105,43 +114,7 @@ app.get(
         }
     ),
     (req, res) => {
-        // Get code from url params
-        let data = JSON.stringify({
-            "grant_type": "authorization_code",
-            "client_id": process.env['CLIENT_ID'],
-            "client_secret": process.env['SECRET'],
-            "redirect_uri": process.env['CALLBACK_URL'],
-            "code": req.query.code
-        });
-
-        // console.log(data);
-        console.log(`curl -X POST -F grant_type=authorization_code -F client_id=${process.env['CLIENT_ID']} -F client_secret=${process.env['SECRET']} -F redirect_uri=${process.env['CALLBACK_URL']} -F code=${req.query.code} https://api.intra.42.fr/oauth/token`);
-        let options = {
-            hostname: 'api.intra.42.fr',
-            path: '/oauth/token',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': Buffer.byteLength(data)
-            }
-        }
-
-        let request = https.request(options,
-            (response) => {
-                console.log(`statusCode: ${response.statusCode}`)
-                response.on('data', (d) => {
-                    console.log(d.toString())
-                }
-            )
-        });
-
-        request.on('error', (error) => {
-            console.error(error)
-        });
-
-        request.write(data);
-        request.end();
-
+        // TODO
         res.redirect('/app');
     }
 );

@@ -1,3 +1,7 @@
+terminal {
+    height: auto;
+}
+
 input, input:focus {
     background: inherit;
     border: inherit;
