@@ -28,12 +28,12 @@ passport.use(new FortyTwoStrategy({
     callbackURL: process.env['CALLBACK_URL']
 },
 function(accessToken, refreshToken, profile, cb) {
-  // In this example, the user's 42 profile is supplied as the user
-  // record.  In a production-quality application, the 42 profile should
-  // be associated with a user record in the application's database, which
-  // allows for account linking and authentication with other identity
-  // providers.
-  return cb(null, profile);
+    // In this example, the user's 42 profile is supplied as the user
+    // record.  In a production-quality application, the 42 profile should
+    // be associated with a user record in the application's database, which
+    // allows for account linking and authentication with other identity
+    // providers.
+    return cb(null, profile);
 }));
 
 // **** Passport session persistence ****
@@ -47,17 +47,18 @@ function(accessToken, refreshToken, profile, cb) {
 // example does not have a database, the complete 42 profile is serialized
 // and deserialized.
 passport.serializeUser(function(user, cb) {
-  cb(null, user);
+    cb(null, user);
 });
 
 passport.deserializeUser(function(obj, cb) {
-  cb(null, obj);
+    cb(null, obj);
 });
 
 // **** Express ****
 const app = express();
 
 // **** View engine setup ****
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
@@ -85,7 +86,6 @@ app.get(
         res.redirect('/app');
     }
 );
-
 app.get(
     '/login',
     passport.authenticate('42')
@@ -94,7 +94,12 @@ app.get(
 // TODO if login fails, loop may occur
 app.get(
     '/login-callback',
-    passport.authenticate('42', { failureRedirect: '/login', successRedirect: '/app' }),
+    passport.authenticate('42',
+        {
+            failureRedirect: '/login',
+            successRedirect: '/app'
+        }
+    ),
 );
 
 app.get(
@@ -107,21 +112,21 @@ app.get(
 
 // **** Errors ****
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use((req, res, next) => {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use((err, req, res, next) => {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 // ********** Module **********

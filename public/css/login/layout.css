@@ -1,0 +1,55 @@
+.big {
+    height: 50vh;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Login btn */
+.login {
+    /* Properties */
+    --btn-color-bg: var(--c-black);
+    --btn-width: 25vw;
+    --btn-border-radius-small: calc(var(--btn-width) / 15);
+    --btn-border-radius-large: calc(var(--btn-width) / 5);
+
+    /* 3d effect */
+    --btn-height: 15px;
+    --btn-hover-hight: 10px;
+    --btn-active-height: 0px;
+    --btn-color-hole: var(--c-white);
+
+
+    width: var(--btn-width);
+    aspect-ratio: 16/3;
+
+    background-color: var(--c-black);
+
+    font: var(--font);
+    color: var(--font-color);
+
+    border: 1px solid var(--btn-color-hole);
+    border-radius: var(--btn-border-radius-small);
+    border-bottom-left-radius: var(--btn-border-radius-large);
+    border-top-right-radius: var(--btn-border-radius-large);
+
+    /* 3d effect */
+    transform: rotateX(10deg);
+    box-shadow: 0 var(--btn-height) 0 0 var(--btn-color-hole);
+    transition: 0.15s;
+    cursor: pointer;
+}
+
+.login:hover {
+    transform: translateY(calc(var(--btn-height) - var(--btn-hover-hight))) rotateX(10deg);
+    box-shadow: 0 var(--btn-hover-hight) 0 0 var(--btn-color-hole);
+}
+
+.login:active {
+    border: none;
+    transform: translateY(calc(var(--btn-height) - var(--btn-active-height))) rotateX(10deg);
+    box-shadow: 0 var(--btn-active-height) 0 0 var(--btn-color-hole);
+}

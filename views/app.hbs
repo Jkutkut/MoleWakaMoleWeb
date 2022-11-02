@@ -1,6 +1,17 @@
-<p>ID: {{ user.id }}</p>
-<p>Xlogin: {{ user.username }}</p>
-<p>Name: {{ user.displayName }}</p>
-<p>Email: {{ user.emails.0.value }}<p>
-<p>Phone {{ user.phoneNumbers.0.value }}<p>
-</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Molewakamole</title>
+    <link rel="stylesheet" href="/css/term.css">
+</head>
+<body>
+    <pre>
+<fn_name>id</fn_name>: <number>{{ user.id }}</number>
+<fn>login</fn>: <string>{{ user.username }}</string>
+<fn>name</fn>: <string>{{ user.displayName }}</string>
+<fn>mail</fn>: <string>{{ user.emails.0.value }}</string>
+<fn>phone</fn>: <string>{{ user.phoneNumbers.0.value }}</string>
+    </pre>
+</body>
+</html>
