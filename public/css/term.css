@@ -38,11 +38,14 @@ pre {
     white-space: -pre-wrap;      /* Opera 4-6 */
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
+
+    margin: 0;
 }
 
 .title {
     line-height: 1.9ch;
     white-space: pre;
+    margin-bottom: 1rem;
 }
 
 /* Code */

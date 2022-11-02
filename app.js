@@ -154,6 +154,13 @@ app.get(
     }
 )
 
+app.get(
+    '/terminal',
+    (req, res) => {
+        res.render('terminal', { user: req.user });
+    }
+)
+
 // **** Errors ****
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
