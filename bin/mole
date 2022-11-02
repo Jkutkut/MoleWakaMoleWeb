@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+// ********** Dependencies **********
+var app = require('../app');
+var debug = require('debug')('passport-42-examples-login:server');
+var printError = require('debug')('passport-42-examples-login:error');
+var http = require('http');
+
+
+// ********** Dependencies **********
+function normalizePort(val) {
+    let port = parseInt(val, 10);
+    if (isNaN(port))
+        return val;
+    if (port >= 0)
+        return port;
+    return false;
+}
+
+// ********** Configuration **********
+const PORT = normalizePort(process.env.PORT || '3000');
+app.set('port', PORT);
+
+const server = http.createServer(app);
+server.listen(PORT);
+server.on('error', 
+    (error) => {
+        if (error.syscall !== 'listen') {
+        throw error;
+        }
+        let bind = typeof PORT === 'string' ? 'Pipe ' + PORT : 'Port ' + PORT;
+        // handle specific listen errors with friendly messages
+        switch (error.code) {
+        case 'EACCES':
+            printError(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            printError(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+        }
+    }
+);
+server.on('listening',
+    () => {
+        let addr = server.address();
+        let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+        debug('Listening on ' + bind);
+    }
+);

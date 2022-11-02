@@ -1,0 +1,31 @@
+{
+  "name": "molewakamoleweb",
+  "version": "0.3.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/mole",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jkutkut/MoleWakaMoleWeb.git"
+  },
+  "author": "Jkutkut",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jkutkut/MoleWakaMoleWeb/issues"
+  },
+  "homepage": "https://github.com/Jkutkut/MoleWakaMoleWeb#readme",
+  "dependencies": {
+    "connect-ensure-login": "^0.1.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "hbs": "^4.2.0",
+    "morgan": "^1.10.0",
+    "passport": "^0.6.0",
+    "passport-42": "^1.2.6"
+  }
+}
