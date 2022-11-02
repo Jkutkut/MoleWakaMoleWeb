@@ -1,5 +1,6 @@
 // ********** Dependencies **********
 const express = require('express');
+const https = require('https');
 const path = require('path');
 require('dotenv').config();
 const logger = require('morgan');
@@ -22,19 +23,22 @@ const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 // behalf, along with the user's profile.  The function must invoke `cb`
 // with a user object, which will be set at `req.user` in route handlers after
 // authentication.
-passport.use(new FortyTwoStrategy({
-    clientID: process.env['CLIENT_ID'],
-    clientSecret: process.env['SECRET'],
-    callbackURL: process.env['CALLBACK_URL']
-},
-function(accessToken, refreshToken, profile, cb) {
-    // In this example, the user's 42 profile is supplied as the user
-    // record.  In a production-quality application, the 42 profile should
-    // be associated with a user record in the application's database, which
-    // allows for account linking and authentication with other identity
-    // providers.
-    return cb(null, profile);
-}));
+passport.use(new FortyTwoStrategy(
+    {
+        clientID: process.env['CLIENT_ID'],
+        clientSecret: process.env['SECRET'],
+        callbackURL: process.env['CALLBACK_URL']
+    },
+    function(accessToken, refreshToken, profile, cb) {
+        // In this example, the user's 42 profile is supplied as the user
+        // record.  In a production-quality application, the 42 profile should
+        // be associated with a user record in the application's database, which
+        // allows for account linking and authentication with other identity
+        // providers.
+        // console.log(profile); // TODO debug
+        return cb(null, profile);
+    }
+));
 
 // **** Passport session persistence ****
 // Configure Passport authenticated session persistence.
@@ -97,9 +101,49 @@ app.get(
     passport.authenticate('42',
         {
             failureRedirect: '/login',
-            successRedirect: '/app'
+            // successRedirect: '/app'
         }
     ),
+    (req, res) => {
+        // Get code from url params
+        let data = JSON.stringify({
+            "grant_type": "authorization_code",
+            "client_id": process.env['CLIENT_ID'],
+            "client_secret": process.env['SECRET'],
+            "redirect_uri": process.env['CALLBACK_URL'],
+            "code": req.query.code
+        });
+
+        // console.log(data);
+        console.log(`curl -X POST -F grant_type=authorization_code -F client_id=${process.env['CLIENT_ID']} -F client_secret=${process.env['SECRET']} -F redirect_uri=${process.env['CALLBACK_URL']} -F code=${req.query.code} https://api.intra.42.fr/oauth/token`);
+        let options = {
+            hostname: 'api.intra.42.fr',
+            path: '/oauth/token',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': Buffer.byteLength(data)
+            }
+        }
+
+        let request = https.request(options,
+            (response) => {
+                console.log(`statusCode: ${response.statusCode}`)
+                response.on('data', (d) => {
+                    console.log(d.toString())
+                }
+            )
+        });
+
+        request.on('error', (error) => {
+            console.error(error)
+        });
+
+        request.write(data);
+        request.end();
+
+        res.redirect('/app');
+    }
 );
 
 app.get(
