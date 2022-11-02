@@ -8,6 +8,7 @@
     --c-green: #1beb9e;
     --c-orange: #ff9528;
     --c-yellow: #dddd25;
+    --c-red: #db2323;
 
 
     --font: 'IBM', monospace;
@@ -79,6 +80,10 @@ number, define {
 
 comment {
     color: var(--c-grey);
+}
+
+error {
+    color: var(--c-red);
 }
 
 /* cmd */

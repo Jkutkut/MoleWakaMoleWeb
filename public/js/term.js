@@ -30,12 +30,35 @@ function executeCommand(command) {
     console.log(command);
 
     addCmd2Term(command);
+    let result = handleCmd(command);
+    if (result.length > 0)
+        addResult2Term(result);
 }
 
 function addCmd2Term(command) {
-    let cmd = document.createElement('pre');
-    cmd.innerHTML = "<cmd>$></cmd> " + command;
+    addResult2Term(`<cmd>$></cmd> ${command}`);
+}
 
-    resultTerm.appendChild(cmd);
+function addResult2Term(result) {
+    let res = document.createElement('pre');
+    res.innerHTML = result;
+    resultTerm.appendChild(res);
     window.scrollTo(0, document.body.scrollHeight);
+}
+
+function handleCmd(command) {
+    command = command.trim();
+    if (command === "")
+        return "";
+
+    let cmd = command.split(" ");
+    switch (cmd[0]) {
+        case "help":
+            return "<comment>TODO</comment>";
+        case "clear":
+            resultTerm.innerHTML = "";
+            return "";
+        default:
+            return "<error>Error</error>: Command not found";
+    }
 }
