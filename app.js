@@ -1,6 +1,7 @@
 // ********** Dependencies **********
 const express = require('express');
 // const https = require('https');
+require('fetch');
 const path = require('path');
 require('dotenv').config();
 const logger = require('morgan');
@@ -94,28 +95,41 @@ app.get(
     '/login',
     passport.authenticate('42')
 );
-const curl = require('curl'); // TODO move to top
-const ClientOAuth2 = require('client-oauth2') // TODO move to top
-var auth = new ClientOAuth2({
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.SECRET,
-    accessTokenUri: 'https://api.intra.42.fr/oauth',
-    authorizationUri: 'https://api.intra.42.fr/oauth/token',
-    redirectUri: process.env.CALLBACK_URL
-});
 
 // TODO if login fails, loop may occur
 app.get(
-    '/login-callback',
+    '/callback',
     passport.authenticate('42',
         {
             failureRedirect: '/login',
             // successRedirect: '/app'
         }
     ),
-    (req, res) => {
+    async (req, res) => {
         // TODO
-        res.redirect('/app');
+        console.log("code: " + req.query.code);
+
+        let token = await fetch(
+            process.env.AUTH_URL,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    grant_type: 'authorization_code',
+                    client_id: process.env.CLIENT_ID,
+                    client_secret: process.env.SECRET,
+                    code: req.query.code,
+                    redirect_uri: process.env.CALLBACK_URL,
+                })
+            }
+        ).then(res => res.json()).then((data) => {
+            console.log(data);
+            res.redirect('/app');
+        });
+        // TODO
+        // res.redirect('/app');
     }
 );
 
