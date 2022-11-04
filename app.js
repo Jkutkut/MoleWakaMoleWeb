@@ -3,6 +3,7 @@ const express = require('express');
 // const https = require('https');
 require('fetch');
 const path = require('path');
+const API42 = require('./molewakamole/api42');
 require('dotenv').config();
 // const logger = require('morgan');
 // const cookieParser = require('cookie-parser');
@@ -148,35 +149,14 @@ app.get(
     }
 )
 
-var __token = null;
-async function getToken() {
-    if (token != null) {
-        let expirationDate = (token['created_at'] + token['expires_in']) * 1000;
-        if (expirationDate > Date.now())
-            return token;
-        else {
-            console.log("token expired");
-            console.log("expiration date: " + expirationDate);
-            console.log("current date   : " + Date.now());
-        }
-    }
-    __token = await fetch(
-        process.env.AUTH_URL,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                grant_type: 'client_credentials',
-                client_id: process.env.CLIENT_ID,
-                client_secret: process.env.SECRET
-            })
-        }
-    ).then(res => res.json());
-    return __token;
-}; getToken();
+const API = new API42(process.env.CLIENT_ID, process.env.SECRET);
 
+app.get('/api/token', (req, res) => {
+    API.updateToken().then(() => {
+        console.log(API.token);
+        res.send(API.token);
+    });
+});
 
 // **** Errors ****
 // catch 404 and forward to error handler
