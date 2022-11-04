@@ -1,0 +1,39 @@
+{
+    "version": "0.0.1",
+    "cmds": [
+        {
+            "cmd": "help",
+            "desc": "Show the help menu.",
+            "alias": ["help", "h"],
+            "flags": [],
+            "value": null,
+            "api": false
+        },
+        {
+            "cmd": "clear",
+            "desc": "Clear the console.",
+            "alias": ["clear", "c"],
+            "flags": [],
+            "value": null,
+            "api": false
+        },
+        {
+            "cmd": "location",
+            "desc": "Show the current location of the given user login.",
+            "alias": ["location", "loc"],
+            "flags": [
+                {
+                    "flag": "-n",
+                    "desc": "Amount of locations",
+                    "value": null,
+                    "optional": false
+                }
+            ],
+            "value": {
+                "name": "LOGIN",
+                "type": "string"
+            },
+            "api": true
+        }
+    ]
+}
