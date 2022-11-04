@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node ./bin/mole",
+    "start": "node --no-warnings=ExperimentalWarning ./bin/mole",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

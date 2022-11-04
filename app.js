@@ -148,9 +148,19 @@ app.get(
     }
 )
 
-var token = null;
+var __token = null;
 async function getToken() {
-    token = await fetch(
+    if (token != null) {
+        let expirationDate = (token['created_at'] + token['expires_in']) * 1000;
+        if (expirationDate > Date.now())
+            return token;
+        else {
+            console.log("token expired");
+            console.log("expiration date: " + expirationDate);
+            console.log("current date   : " + Date.now());
+        }
+    }
+    __token = await fetch(
         process.env.AUTH_URL,
         {
             method: 'POST',
@@ -163,10 +173,8 @@ async function getToken() {
                 client_secret: process.env.SECRET
             })
         }
-    ).then(res => res.json()).then((data) => {
-        console.log(data);
-        return data;
-    });
+    ).then(res => res.json());
+    return __token;
 }; getToken();
 
 
