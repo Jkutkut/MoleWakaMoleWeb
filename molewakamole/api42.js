@@ -21,22 +21,14 @@ class API42 {
                 console.log("current date   : " + Date.now());
             }
         }
-        let response = await fetch(
-            this.URL + 'oauth/token',
+        this._token = await this.post(
+            'oauth/token',
             {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    grant_type: 'client_credentials',
-                    client_id: this._client_id,
-                    client_secret: this._secret,
-                })
+                grant_type: 'client_credentials',
+                client_id: this._client_id,
+                client_secret: this._secret
             }
         );
-        let r = await response.json();
-        this._token = r;
     }
 
     get token() {
@@ -57,6 +49,7 @@ class API42 {
         return this.URL + url + filtersString;
     }
 
+    // TODO
     get(url, filters = [], header = null, multiRequest = false, page_size = this.MAX_PAGE_SIZE) {
         if (!header)
             header = this.basicHeader;
@@ -66,6 +59,7 @@ class API42 {
             return this._get(this.formatUrl(url, filters), header);
     }
 
+    // TODO
     async _get(url, header = {}) {
         console.log(url);
         console.log(header);
@@ -76,6 +70,23 @@ class API42 {
         });
         return response;
     }
+
+    async post(url, body, header = null) {
+        if (header == null)
+            header = {'Content-Type': 'application/json'};
+        return (await this._post(this.formatUrl(url), body, header)).json();
+    }
+
+    async _post(url, body, header = {}) {
+        let response = await fetch(url, {
+            method: 'POST',
+            headers: header,
+            body: JSON.stringify(body),
+        });
+        // TODO check if response is ok
+        return response;
+    }
+
 }
 
 module.exports = API42;
