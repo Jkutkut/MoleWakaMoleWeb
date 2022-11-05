@@ -11,15 +11,14 @@ async function handleCmdAPI(cmdArr, cmd) {
 }
 
 function handleLocation(cmdArr, cmd) {
+    let login = cmdArr[cmdArr.length - 1];
     return {
-        endpoint: '/v2/locations',
+        endpoint: `/v2/users/${login}/locations`,
         filters: ["page[size]=1"]
     };
 }
 
 async function makeRequestAPI(request) {
-    console.log(request);
-    console.log(JSON.stringify(request));
     let response = await fetch(
         '/api/request',
         {
@@ -33,5 +32,5 @@ async function makeRequestAPI(request) {
     if (response.status != 200)
         return `<error>Error</error>: ${response.status} ${response.statusText}`;
     response = await response.json();
-    return response.statusText;
+    return JSON.stringify(response);
 }

@@ -62,7 +62,8 @@ require('dotenv').config();
 
 // **** Express ****
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // **** View engine setup ****
 app.use(express.static(path.join(__dirname, 'public')));
@@ -153,20 +154,11 @@ app.get(
 const API = new API42(process.env.CLIENT_ID, process.env.SECRET);
 
 app.post('/api/request', (req, res) => {
-    // API.updateToken().then(() => {
-    //     console.log(API.token);
-    //     res.send(API.token);
-    // });
-    console.log('body:', req.body);
-
-    API.updateToken().then(() => {
-        // get request data
-        console.log(req.body);
-
-        // res.status(200).send(JSON.stringify({
-        //     statusText: 'Not Implemented',
-        // }));
-        res.sendStatus(503);
+    API.get(req.body.endpoint, req.body.filters).then(result => {
+        console.log("Sending result");
+        res.status(200).send(JSON.stringify(result));
+    }).catch(err => {
+        res.status(503).send(JSON.stringify(err));
     });
 });
 

@@ -1,5 +1,5 @@
 class API42 {
-    URL = "https://api.intra.42.fr/";
+    URL = "https://api.intra.42.fr";
     MAX_PAGE_SIZE = 100;
 
     constructor(client_id, secret) {
@@ -22,7 +22,7 @@ class API42 {
             }
         }
         this._token = await this.post(
-            'oauth/token',
+            '/oauth/token',
             {
                 grant_type: 'client_credentials',
                 client_id: this._client_id,
@@ -37,7 +37,7 @@ class API42 {
 
     get basicHeader() {
         return {
-            'Authorization': 'Bearer ' + this._token,
+            'Authorization': 'Bearer ' + this.token['access_token'],
             'Content-Type': 'application/json'
         };
     }
@@ -50,19 +50,25 @@ class API42 {
     }
 
     // TODO
-    get(url, filters = [], header = null, multiRequest = false, page_size = this.MAX_PAGE_SIZE) {
-        if (!header)
-            header = this.basicHeader;
-        // if (!filters.find(filter => filter.key.includes('page[size]')))
-        //     filters.push(`page[size]=${page_size}`); // TODO check this makes sense
-        if (!multiRequest)
-            return this._get(this.formatUrl(url, filters), header);
+    async get(url, filters = [], header = null, multiRequest = false, page_size = this.MAX_PAGE_SIZE) {
+        return await this.updateToken().then(async () => {
+            if (!header)
+                header = this.basicHeader;
+            // if (!filters.find(filter => filter.key.includes('page[size]')))
+            //     filters.push(`page[size]=${page_size}`); // TODO check this makes sense
+            if (!multiRequest)
+                return await this._get(this.formatUrl(url, filters), header);
+        }).then(async (response) => await response.json())
+        // .catch(err => {
+        //     console.log(err);
+        //     return {error: err, status: 503};
+        // });
     }
 
     // TODO
     async _get(url, header = {}) {
-        console.log(url);
-        console.log(header);
+        console.log(url); // TODO remove
+        // console.log(header);
         const response = await fetch(url, {
             method: 'GET',
             headers: header,

@@ -6,7 +6,7 @@ window.addEventListener('load', async () => {
 
     // TODO debug
     // executeCommand('help');
-    executeCommand('loc jkutkut');
+    executeCommand('loc jre-gonz');
 });
 
 // ********** handle cmd **********
