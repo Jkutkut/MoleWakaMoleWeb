@@ -5,7 +5,8 @@ window.addEventListener('load', async () => {
     CMDS = await response.json();
 
     // TODO debug
-    executeCommand('help');
+    // executeCommand('help');
+    executeCommand('loc jkutkut');
 });
 
 // ********** handle cmd **********
@@ -15,32 +16,32 @@ function handleCmd(command) {
     if (command === "")
         return "";
 
-    let cmd_arr = command.split(" ");
-    let cmd = getCmd(cmd_arr[0]);
+    let cmdArr = command.split(" ");
+    let cmd = getCmd(cmdArr[0]);
     if (!cmd)
-        return `<error>Error</error>: Command '${cmd_arr[0]}' not found`;
-    if (!isValidCmd(cmd_arr, cmd))
+        return `<error>Error</error>: Command '${cmdArr[0]}' not found`;
+    if (!isValidCmd(cmdArr, cmd))
         return descriptionCmd(cmd);
     if (!cmd['api']) {
         if (cmd['cmd'] == 'help')
-            return handleHelp(cmd_arr, cmd);
+            return handleHelp(cmdArr, cmd);
         else if (cmd['cmd'] == 'man')
-            return handleMan(cmd_arr, cmd);
+            return handleMan(cmdArr, cmd);
         else
-            return handleClear(cmd_arr, cmd)
+            return handleClear(cmdArr, cmd)
     }
-    return 'api';
+    return handleCmdAPI(cmdArr, cmd);
 }
 
 // ********** cmds **********
 
 
-function handleClear(cmd_arr, cmd) {
+function handleClear(cmdArr, cmd) {
     resultTerm.innerHTML = "";
     return "";
 }
 
-function handleHelp(cmd_arr, cmd) {
+function handleHelp(cmdArr, cmd) {
     let response = `<string>help</string>\n`
     
     for (let c of CMDS.cmds) {
@@ -51,10 +52,10 @@ function handleHelp(cmd_arr, cmd) {
     return response;
 }
 
-function handleMan(cmd_arr, cmd) {
-    let c = getCmd(cmd_arr[1]);
+function handleMan(cmdArr, cmd) {
+    let c = getCmd(cmdArr[1]);
     if (!c)
-        return `<error>Error</error>: No entry for '${cmd_arr[1]}'`;
+        return `<error>Error</error>: No entry for '${cmdArr[1]}'`;
     return descriptionCmd(c, fullUsage = true);
 }
 
@@ -70,45 +71,40 @@ function getCmd(cmd) {
     return null;
 }
 
-function isValidCmd(cmd_arr, cmd) {
-    // console.log(cmd_arr);
-    let idxEnd = cmd_arr.length - 1;
+function isValidCmd(cmdArr, cmd) {
+    let idxEnd = cmdArr.length - 1;
     if (cmd['value'] !== null)
         idxEnd--;
-
     // Check cmd is valid alias?
     let idx = 1;
-
     // Check flags
     let flag;
     while (idx <= idxEnd) {
-        flag = getFlag(cmd_arr[idx], cmd['flags']);
+        flag = getFlag(cmdArr[idx], cmd['flags']);
         if (!flag)
             return false;
         if (flag['value'] !== null) {
             if (idx + 1 > idxEnd)
                 return false;
-            if (!isValidValue(cmd_arr[++idx], flag['value']))
+            if (!isValidValue(cmdArr[++idx], flag['value']))
                 return false;
         }
         idx++;
     }
-
     for (flag of cmd['flags']) {
-        if (!flag['optional'] && !cmd_arr.includes(flag['flag']))
+        if (!flag['optional'] && !cmdArr.includes(flag['flag']))
             return false;
     }
-
     // Check value
     if (cmd['value'] !== null) {
-        if (cmd_arr.length <= idx)
+        if (cmdArr.length <= idx)
             return false;
-        if (getFlag(cmd_arr[idx], cmd['flags']))
+        if (getFlag(cmdArr[idx], cmd['flags']))
             return false;
-        return isValidValue(cmd_arr[idx], cmd['value']);
+        return isValidValue(cmdArr[idx], cmd['value']);
     }
     else
-        return cmd_arr.length === idx;
+        return cmdArr.length === idx;
 }
 
 function isValidValue(value, speckedValue) {
@@ -137,7 +133,6 @@ function descriptionCmd(cmd, fullUsage = false) {
     usage += `  <cmd>$></cmd> ${usageCmd(cmd)}\n`;
     if (fullUsage) {
         usage += `  Description:\n    ${cmd['desc']}\n`;
-
         if (cmd['flags'].length > 0) {
             usage += `  Flags:\n`;
             for (let flag of cmd['flags']) {
@@ -154,12 +149,10 @@ function descriptionCmd(cmd, fullUsage = false) {
 
 function usageCmd(cmd) {
     let usage = `${cmd['alias'][0]}`;
-
     if (cmd['flags'].length > 0) {
         for (let flag of cmd['flags'])
             usage += ` ${flagFormat(flag)}`;
     }
-
     if (cmd['value'] !== null) {
         usage += ` ${valueFormat(cmd['value'])}`;
     }
@@ -172,7 +165,6 @@ function flagFormat(flag, optionalFormat = true) {
         optionalStart = (flag['optional']) ? '[' : '&#60;';
         optionalEnd = (flag['optional']) ? ']' : '&#62;';
     }
-
     let usage = `${optionalStart}${flag['flag']}`;
     if (flag['value'] !== null)
         usage += ` ${valueFormat(flag['value'])}`;
