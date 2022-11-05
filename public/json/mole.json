@@ -1,5 +1,5 @@
 {
-    "version": "0.0.5",
+    "version": "0.0.6",
     "cmds": [
         {
             "cmd": "clear",
@@ -39,9 +39,9 @@
             "api": true
         },
         {
-            "cmd": "login history",
+            "cmd": "loginhistory",
             "desc": "Show the login history of the given user login.",
-            "alias": ["lochistory", "loginhistory"],
+            "alias": ["loginhistory", "lochistory", "lhist"],
             "flags": [
                 {
                     "flag": "-n",

@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 require('fetch');
 const path = require('path');
-const API42 = require('./molewakamole/api42');
+const Molewakamole = require('./molewakamole/molewakamole');
 require('dotenv').config();
 // const logger = require('morgan');
 // const cookieParser = require('cookie-parser');
@@ -151,16 +151,22 @@ app.get(
     }
 )
 
-const API = new API42(process.env.CLIENT_ID, process.env.SECRET);
+// const API = new API42(process.env.CLIENT_ID, process.env.SECRET);
+
+// app.post('/api/request', (req, res) => {
+//     API.get(req.body.endpoint, req.body.filters).then(result => {
+//         console.log(result);
+//         console.log("Sending result");
+//         res.render('api/location', {data: result[0]})
+//     }).catch(err => {
+//         res.status(503).send(JSON.stringify(err));
+//     });
+// });
+
+const mole = new Molewakamole(process.env.CLIENT_ID, process.env.SECRET);
 
 app.post('/api/request', (req, res) => {
-    API.get(req.body.endpoint, req.body.filters).then(result => {
-        console.log(result);
-        console.log("Sending result");
-        res.render('api/location', {data: result[0]})
-    }).catch(err => {
-        res.status(503).send(JSON.stringify(err));
-    });
+    mole.get(req, res);
 });
 
 // **** Errors ****
