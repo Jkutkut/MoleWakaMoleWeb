@@ -155,8 +155,9 @@ const API = new API42(process.env.CLIENT_ID, process.env.SECRET);
 
 app.post('/api/request', (req, res) => {
     API.get(req.body.endpoint, req.body.filters).then(result => {
+        console.log(result);
         console.log("Sending result");
-        res.status(200).send(JSON.stringify(result));
+        res.render('api/location', {data: result[0]})
     }).catch(err => {
         res.status(503).send(JSON.stringify(err));
     });
