@@ -11,7 +11,7 @@ window.addEventListener('load', async () => {
 
 // ********** handle cmd **********
 
-function handleCmd(command) {
+async function handleCmd(command) {
     command = command.trim();
     if (command === "")
         return "";
@@ -30,7 +30,7 @@ function handleCmd(command) {
         else
             return handleClear(cmdArr, cmd)
     }
-    return handleCmdAPI(cmdArr, cmd);
+    return await handleCmdAPI(cmdArr, cmd);
 }
 
 // ********** cmds **********

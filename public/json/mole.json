@@ -1,5 +1,5 @@
 {
-    "version": "0.0.4",
+    "version": "0.0.5",
     "cmds": [
         {
             "cmd": "clear",
@@ -31,6 +31,17 @@
             "cmd": "location",
             "desc": "Show the current location of the given user login.",
             "alias": ["location", "loc"],
+            "flags": [],
+            "value": {
+                "name": "LOGIN",
+                "type": "string"
+            },
+            "api": true
+        },
+        {
+            "cmd": "login history",
+            "desc": "Show the login history of the given user login.",
+            "alias": ["lochistory", "loginhistory"],
             "flags": [
                 {
                     "flag": "-n",
@@ -39,7 +50,7 @@
                         "name": "N",
                         "type": "number"
                     },
-                    "optional": true
+                    "optional": false
                 }
             ],
             "value": {

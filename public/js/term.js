@@ -24,14 +24,19 @@ window.onload = () =>  {
     //     inputTerm.focus();
     // });
 
+    window.addEventListener('click', () => {
+        inputTerm.focus();
+    });
+
     inputTerm.focus();
 };
 
 function executeCommand(command) {
     addCmd2Term(command);
-    let result = handleCmd(command);
-    if (result.length > 0)
-        addResult2Term(result);
+    handleCmd(command).then((result) => {
+        if (result.length > 0)
+            addResult2Term(result);
+    });
 }
 
 function addCmd2Term(command) {
