@@ -88,6 +88,7 @@ const parser = {
         // TODO change to locale
         // hh:mm:ss dd/mm/yyyy
         let result = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        return result;
     },
     // cmds
     'location': (data) => {
