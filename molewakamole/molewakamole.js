@@ -18,17 +18,17 @@ class Molewakamole {
             else 
                 res.render('api/' + req.body.cmd, {data: data});
         }).catch(err => {
-            res.status(503).send(JSON.stringify(err));
+            console.log(err);
+            res.sendStatus(503);
         });
     }
 
     formatData(request, data) {
-        switch (request.cmd) {
-            case 'location':
-                return data[0];
-            default:
-                request.cmd = 'json';
-                return data;
+        if (parser[request.cmd])
+            return parser[request.cmd](data);
+        else {
+            request.cmd = 'json';
+            return data;
         }
     }
 
@@ -76,6 +76,25 @@ class Molewakamole {
         if (this.indentArr[depth] == undefined)
             this.indentArr[depth] = "  ".repeat(depth);
         return this.indentArr[depth];
+    }
+}
+
+const parser = {
+    'dateTime': (d) => {
+        if (d == null)
+            return "Now";
+
+        let date = new Date(d);
+        // TODO change to locale
+        // hh:mm:ss dd/mm/yyyy
+        let result = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    },
+    // cmds
+    'location': (data) => {
+        data = data[0];
+        data.begin_at = parser.dateTime(data.begin_at);
+        data.end_at = parser.dateTime(data.end_at);
+        return data;
     }
 }
 
