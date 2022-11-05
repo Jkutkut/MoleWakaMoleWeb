@@ -1,4 +1,3 @@
-const { request } = require('../app');
 const API42 = require('./api42');
 
 class Molewakamole {
@@ -14,9 +13,8 @@ class Molewakamole {
             }
             let data = this.formatData(req.body, result);
 
-            if (true || req.body.cmd == 'json') {
+            if (req.body.cmd == 'json')
                 res.send(this.stringify(data));
-            }
             else 
                 res.render('api/' + req.body.cmd, {data: data});
         }).catch(err => {
@@ -34,27 +32,38 @@ class Molewakamole {
         }
     }
 
+    // Stringify data
+
     stringify(data, depth = 0) {
         let s;
         if (Array.isArray(data)) {
-            s = `${this.indent(depth)}[\n`;
+            if (data.length == 0)
+                return `[]`;
+            s = `[\n`;
             for (let i = 0; i < data.length; i++) {
-                s += `${this.stringify(data[i], depth + 1)},\n`;
+                s += `${this.indent(depth + 1)}${this.stringify(data[i], depth + 1)},\n`;
             }
-            s += "]";
+            s = s.slice(0, -2) + `\n${this.indent(depth)}]`;
         }
         else if (typeof data == 'object') {
-            s = `${this.indent(depth)}{\n`;
+            if (data == {})
+                return `{}`;
+            else if (data == null)
+                return '<obj>null</obj>';
+            s = `{\n`;
             for (let key in data) {
-                s += `${this.indent(depth + 1)}${key}: ${this.stringify(data[key], depth + 1)},\n`;
+                s += this.indent(depth + 1);
+                s += `${key}: ${this.stringify(data[key], depth + 1)},\n`;
             }
-            s += `${this.indent(depth)}}`;
+            s = s.slice(0, -2) + `\n${this.indent(depth)}}`;
         }
         else {
             if (typeof data == 'string')
                 s = `<string>${data}</string>`;
             else if (typeof data == 'number')
                 s = `<number>${data}</number>`;
+            else if (typeof data == 'boolean')
+                s = `<boolean>${data}</boolean>`;
             else
                 s = data;
         }
