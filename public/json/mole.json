@@ -1,14 +1,6 @@
 {
-    "version": "0.0.2",
+    "version": "0.0.4",
     "cmds": [
-        {
-            "cmd": "help",
-            "desc": "Show the help menu.",
-            "alias": ["help", "man"],
-            "flags": [],
-            "value": null,
-            "api": false
-        },
         {
             "cmd": "clear",
             "desc": "Clear the console.",
@@ -16,6 +8,24 @@
             "flags": [],
             "value": null,
             "api": false
+        },
+        {
+            "cmd": "help",
+            "desc": "Show the help menu.",
+            "alias": ["help"],
+            "flags": [],
+            "value": null,
+            "api": false
+        },
+        {
+            "cmd": "man",
+            "desc": "Show the manual for a command.",
+            "alias": ["man"],
+            "flags": [],
+            "value": {
+                "name": "CMD",
+                "type": "string"
+            }
         },
         {
             "cmd": "location",

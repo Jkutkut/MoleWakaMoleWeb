@@ -5,9 +5,12 @@ window.addEventListener('load', async () => {
     CMDS = await response.json();
 
     // TODO debug
-    executeCommand('help');
-    executeCommand('clear');
+    // executeCommand('help');
+    // executeCommand('clear hello');
     executeCommand('location');
+    executeCommand('location -n');
+    executeCommand('location -n login');
+    executeCommand('location -n 2 login');
 });
 
 // ********** handle cmd **********
@@ -21,11 +24,13 @@ function handleCmd(command) {
     let cmd = getCmd(cmd_arr[0]);
     if (!cmd)
         return `<error>Error</error>: Command '${cmd_arr[0]}' not found`;
-    if (!validCmd(cmd_arr, cmd))
+    if (!isValidCmd(cmd_arr, cmd))
         return descriptionCmd(cmd);
     if (!cmd['api']) {
         if (cmd['cmd'] == 'help')
             return handleHelp(cmd_arr, cmd);
+        else if (cmd['cmd'] == 'man')
+            return handleMan(cmd_arr, cmd);
         else
             return handleClear(cmd_arr, cmd)
     }
@@ -45,6 +50,13 @@ function handleHelp(cmd_arr, cmd) {
     return "<error>Error</error>: TODO"; // TODO
 }
 
+function handleMan(cmd_arr, cmd) {
+    let c = getCmd(cmd_arr[1]);
+    if (!c)
+        return `<error>Error</error>: No entry for '${cmd_arr[1]}'`;
+    return descriptionCmd(c, fullUsage = true);
+}
+
 // ********** cmd tools **********
 
 function getCmd(cmd) {
@@ -57,12 +69,64 @@ function getCmd(cmd) {
     return null;
 }
 
-function validCmd(cmd_arr, cmd) {
+function isValidCmd(cmd_arr, cmd) {
+    // console.log(cmd_arr);
+    let idxEnd = cmd_arr.length - 1;
+    if (cmd['value'] !== null)
+        idxEnd--;
+
     // Check cmd is valid alias?
-    // if (cmd['value'] )
-    // TODO
-    // return true;
-    return false;
+    let idx = 1;
+
+    // Check flags
+    let flag;
+    while (idx <= idxEnd) {
+        flag = getFlag(cmd_arr[idx], cmd['flags']);
+        if (!flag)
+            return false;
+        if (flag['value'] !== null) {
+            if (idx + 1 > idxEnd)
+                return false;
+            if (!isValidValue(cmd_arr[++idx], flag['value']))
+                return false;
+        }
+        idx++;
+    }
+
+    for (flag of cmd['flags']) {
+        if (!flag['optional'] && !cmd_arr.includes(flag['flag']))
+            return false;
+    }
+
+    // Check value
+    if (cmd['value'] !== null) {
+        if (cmd_arr.length <= idx)
+            return false;
+        if (getFlag(cmd_arr[idx], cmd['flags']))
+            return false;
+        return isValidValue(cmd_arr[idx], cmd['value']);
+    }
+    else
+        return cmd_arr.length === idx;
+}
+
+function isValidValue(value, speckedValue) {
+    switch(speckedValue['type']) {
+        case 'string':
+            return true;
+        case 'number':
+            return !isNaN(value);
+        default:
+            return false;
+    }
+}
+
+function getFlag(flag, flags) {
+    for (let f of flags) {
+        if (flag == f['flag'])
+            return f;
+    }
+    return null;
 }
 
 // ********** cmd format **********
