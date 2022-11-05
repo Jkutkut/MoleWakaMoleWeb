@@ -5,12 +5,7 @@ window.addEventListener('load', async () => {
     CMDS = await response.json();
 
     // TODO debug
-    // executeCommand('help');
-    // executeCommand('clear hello');
-    executeCommand('location');
-    executeCommand('location -n');
-    executeCommand('location -n login');
-    executeCommand('location -n 2 login');
+    executeCommand('help');
 });
 
 // ********** handle cmd **********
@@ -46,8 +41,14 @@ function handleClear(cmd_arr, cmd) {
 }
 
 function handleHelp(cmd_arr, cmd) {
-    CMDS.cmds.forEach(cmd => console.log(cmd));
-    return "<error>Error</error>: TODO"; // TODO
+    let response = `<string>help</string>\n`
+    
+    for (let c of CMDS.cmds) {
+        response += `  ${c['cmd']}\n`
+    }
+    response += `\n  Use the <cmd>man</cmd> command for more information:\n`;
+    response += descriptionCmd(getCmd('man'));
+    return response;
 }
 
 function handleMan(cmd_arr, cmd) {
