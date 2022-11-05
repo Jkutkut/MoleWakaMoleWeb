@@ -1,6 +1,6 @@
 // ********** Dependencies **********
 const express = require('express');
-// const https = require('https');
+const bodyParser = require('body-parser');
 require('fetch');
 const path = require('path');
 const API42 = require('./molewakamole/api42');
@@ -62,6 +62,7 @@ require('dotenv').config();
 
 // **** Express ****
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // **** View engine setup ****
 app.use(express.static(path.join(__dirname, 'public')));
@@ -151,10 +152,21 @@ app.get(
 
 const API = new API42(process.env.CLIENT_ID, process.env.SECRET);
 
-app.get('/api/token', (req, res) => {
+app.post('/api/request', (req, res) => {
+    // API.updateToken().then(() => {
+    //     console.log(API.token);
+    //     res.send(API.token);
+    // });
+    console.log('body:', req.body);
+
     API.updateToken().then(() => {
-        console.log(API.token);
-        res.send(API.token);
+        // get request data
+        console.log(req.body);
+
+        // res.status(200).send(JSON.stringify({
+        //     statusText: 'Not Implemented',
+        // }));
+        res.sendStatus(503);
     });
 });
 
