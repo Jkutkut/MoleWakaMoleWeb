@@ -1,10 +1,10 @@
 {
-    "version": "0.0.1",
+    "version": "0.0.2",
     "cmds": [
         {
             "cmd": "help",
             "desc": "Show the help menu.",
-            "alias": ["help", "h"],
+            "alias": ["help", "man"],
             "flags": [],
             "value": null,
             "api": false
@@ -12,7 +12,7 @@
         {
             "cmd": "clear",
             "desc": "Clear the console.",
-            "alias": ["clear", "c"],
+            "alias": ["clear"],
             "flags": [],
             "value": null,
             "api": false
@@ -24,9 +24,12 @@
             "flags": [
                 {
                     "flag": "-n",
-                    "desc": "Amount of locations",
-                    "value": null,
-                    "optional": false
+                    "desc": "Amount of locations to show.",
+                    "value": {
+                        "name": "N",
+                        "type": "number"
+                    },
+                    "optional": true
                 }
             ],
             "value": {
