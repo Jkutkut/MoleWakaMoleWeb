@@ -80,6 +80,7 @@ class Molewakamole {
 }
 
 const parser = {
+    // Normal parsers
     'dateTime': (d) => {
         if (d == null)
             return "Now";
@@ -90,11 +91,28 @@ const parser = {
         let result = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
         return result;
     },
-    // cmds
+    // API parsers
+    'campusID2name': (d) => {
+        let result = {
+            22: "MADRID",
+            14: "CODAM",
+            37: "MALAGA",
+            40: "URDULIZ",
+            46: "BARCELONA",
+            44: "WOLFSBURG"
+        }[d];
+        return (result == undefined) ? "UNKNOWN" : result;
+    },
+    // cmd parsers
     'location': (data) => {
         data = data[0];
         data.begin_at = parser.dateTime(data.begin_at);
         data.end_at = parser.dateTime(data.end_at);
+        if (data.end_at == "Now") {
+            data.end_at = "";
+            data.not_ended = "Not ended";
+        }
+        data.campusName = parser.campusID2name(data.campus_id);
         return data;
     }
 }
