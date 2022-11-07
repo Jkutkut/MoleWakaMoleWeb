@@ -3,10 +3,6 @@ var CMDS = null;
 window.addEventListener('load', async () => {
     let response = await fetch('/json/mole.json');
     CMDS = await response.json();
-
-    // TODO debug
-    // executeCommand('help');
-    executeCommand('loc jre-gonz');
 });
 
 // ********** handle cmd **********

@@ -6,7 +6,12 @@ class Molewakamole {
     }
 
     get(req, res) {
-        this.api.get(req.body.endpoint, req.body.filters).then(result => {
+        this.api.get(
+            req.body.endpoint,
+            req.body.filters,
+            req.body.multiRequest,
+            req.body.pageSize
+        ).then(result => {
             if (result.length == 0 || result[0] == {} || result[0] == [] || result[0] == null) {
                 res.sendStatus(404);
                 return;

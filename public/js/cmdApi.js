@@ -19,7 +19,9 @@ function handleLocation(cmdArr, cmd) {
     return {
         cmd: cmd['cmd'],
         endpoint: `/v2/users/${login}/locations`,
-        filters: ["page[size]=1"]
+        filters: [],
+        multiRequest: false,
+        pageSize: 1
     };
 }
 
@@ -36,7 +38,9 @@ function handleLoginHistory(cmdArr, cmd) {
     return {
         cmd: cmd['cmd'],
         endpoint: `/v2/users/${login}/locations`,
-        filters: ["page[size]=" + amount]
+        filters: [],
+        multiRequest: false,
+        pageSize: amount
     };
 }
 

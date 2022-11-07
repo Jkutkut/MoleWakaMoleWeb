@@ -50,12 +50,12 @@ class API42 {
     }
 
     // TODO
-    async get(url, filters = [], header = null, multiRequest = false, page_size = this.MAX_PAGE_SIZE) {
+    async get(url, filters = [], multiRequest = false, page_size = this.MAX_PAGE_SIZE) {
         return await this.updateToken().then(async () => {
-            if (!header)
-                header = this.basicHeader;
-            // if (!filters.find(filter => filter.key.includes('page[size]')))
-            //     filters.push(`page[size]=${page_size}`); // TODO check this makes sense
+            let header = this.basicHeader;
+            if (!filters.find(filter => filter.key.includes('page[size]')))
+                filters.push(`page[size]=${page_size}`);
+            // TODO pageSize > MAX_PAGE_SIZE
             if (!multiRequest)
                 return await this._get(this.formatUrl(url, filters), header);
         }).then(async (response) => await response.json())
