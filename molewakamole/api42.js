@@ -50,15 +50,41 @@ class API42 {
     }
 
     // TODO
-    async get(url, filters = [], multiRequest = false, page_size = this.MAX_PAGE_SIZE) {
+    async get(url, filters = [], multiRequest = false, amount = this.MAX_PAGE_SIZE) {
         return await this.updateToken().then(async () => {
+            let data;
             let header = this.basicHeader;
-            if (!filters.find(filter => filter.key.includes('page[size]')))
-                filters.push(`page[size]=${page_size}`);
-            // TODO pageSize > MAX_PAGE_SIZE
-            if (!multiRequest)
-                return await this._get(this.formatUrl(url, filters), header);
-        }).then(async (response) => await response.json())
+
+            if (!multiRequest) {
+                if (amount <= this.MAX_PAGE_SIZE) {
+                    filters.push(`page[size]=${amount}`);
+                    data = await this._get(this.formatUrl(url, filters), header);
+                }
+                else {
+                    let page = 1;
+                    data = [];
+                    let fs, response;
+                    while (amount > 0) {
+                        fs = [
+                            ...filters,
+                            `page[size]=${Math.min(amount, this.MAX_PAGE_SIZE)}`,
+                            `page[number]=${page}`
+                        ];
+                        response = await this._get(this.formatUrl(url, fs), header);
+                        data.push(...response);
+                        if (response.length < Math.min(amount, this.MAX_PAGE_SIZE))
+                            break;
+                        amount -= this.MAX_PAGE_SIZE;
+                        page++;
+                    }
+                }
+            }
+            else {
+                // TODO
+                data = [];
+            }
+            return data;
+        });
         // .catch(err => {
         //     console.log(err);
         //     return {error: err, status: 503};
@@ -74,7 +100,7 @@ class API42 {
             headers: header,
             mode: 'no-cors',
         });
-        return response;
+        return await response.json();
     }
 
     async post(url, body, header = null) {
