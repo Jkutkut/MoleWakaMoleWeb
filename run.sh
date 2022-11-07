@@ -1,13 +1,21 @@
 #!/bin/zsh
 
-# TODO check .env file
+if [ ! -f .env ]; then
+	./setup.sh
+fi
 
 ip=$(hostname -I | awk '{print $1}')
 
-direction="$ip:3000/terminal"
+direction="http://$ip:3000/terminal"
 
-# TODO remove sudo usage
-sudo docker run -it --rm jkutkut/py-qr $direction
+if [ "$1" = "--qr" ]; then
+	# TODO remove sudo usage
+	sudo docker run -it --rm jkutkut/py-qr $direction
+fi
+
+echo "Running at:"
+echo "  $direction"
+echo "  http://localhost:3000/terminal"
 
 npm start
 
