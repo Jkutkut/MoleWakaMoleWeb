@@ -4,9 +4,13 @@ async function handleCmdAPI(cmdArr, cmd) {
         case 'location':
             request = handleLocation(cmdArr, cmd);
             break;
+        case 'loginHistory':
+            request = handleLoginHistory(cmdArr, cmd);
+            break;
         default:
             return "<error>Error</error>: API method not implemented";
     }
+    console.log(request);
     return await makeRequestAPI(request);
 }
 
@@ -16,6 +20,17 @@ function handleLocation(cmdArr, cmd) {
         cmd: cmd['cmd'],
         endpoint: `/v2/users/${login}/locations`,
         filters: ["page[size]=1"]
+    };
+}
+
+function handleLoginHistory(cmdArr, cmd) {
+    let login = cmdArr[cmdArr.length - 1];
+    // TODO amount
+    let amount = cmd['default']['amount'];
+    return {
+        cmd: cmd['cmd'],
+        endpoint: `/v2/users/${login}/locations`,
+        filters: ["page[size]=" + amount]
     };
 }
 
