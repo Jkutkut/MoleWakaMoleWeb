@@ -38,12 +38,12 @@ function handleClear(cmdArr, cmd) {
 }
 
 function handleHelp(cmdArr, cmd) {
-    let response = `<string>help</string>\n`
+    let response = `<string>help</string>\n  Available commands:\n`;
     
     for (let c of CMDS.cmds) {
-        response += `  ${c['cmd']}\n`
+        response += `    <cmd>${c['cmd']}</cmd>\n`
     }
-    response += `\n  Use the <cmd>man</cmd> command for more information:\n`;
+    response += `  Use the <cmd>man</cmd> command for more information:\n`;
     response += descriptionCmd(getCmd('man'));
     return response;
 }
