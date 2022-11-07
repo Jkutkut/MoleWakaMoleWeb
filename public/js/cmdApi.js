@@ -25,8 +25,14 @@ function handleLocation(cmdArr, cmd) {
 
 function handleLoginHistory(cmdArr, cmd) {
     let login = cmdArr[cmdArr.length - 1];
-    // TODO amount
     let amount = cmd['default']['amount'];
+
+    let idx = 1;
+    while (idx < cmdArr.length - 1) {
+        if (cmdArr[idx++] == '-n')
+            amount = cmdArr[idx++];
+    }
+
     return {
         cmd: cmd['cmd'],
         endpoint: `/v2/users/${login}/locations`,
