@@ -111,9 +111,9 @@ const parser = {
     'host': (host, campusId) => {
         if (campusId == 22) {
             let clusterName = {
-                'c1': 'Cluster 1', // TODO
+                'c1': 'Enterprise',
                 'c2': 'Millennium Falcon',
-                'c3': 'Cluster 3' // TODO
+                'c3': 'Endurance'
             }[host.substring(0, 2)];
             if (clusterName)
                 return `${clusterName} - ${host}`;
