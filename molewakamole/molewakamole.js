@@ -92,7 +92,7 @@ const parser = {
         return result;
     },
     // API parsers
-    'campusID2name': (d) => {
+    'campusID2name': (c) => {
         let result = {
             22: "MADRID",
             14: "CODAM",
@@ -100,12 +100,25 @@ const parser = {
             40: "URDULIZ",
             46: "BARCELONA",
             44: "WOLFSBURG"
-        }[d];
+        }[c];
         return (result == undefined) ? "UNKNOWN" : result;
+    },
+    'host': (host, campusId) => {
+        if (campusId == 22) {
+            let clusterName = {
+                'c1': 'Cluster 1', // TODO
+                'c2': 'Millennium Falcon',
+                'c3': 'Cluster 3' // TODO
+            }[host.substring(0, 2)];
+            if (clusterName)
+                return `${clusterName} - ${host}`;
+        }
+        return host;
     },
     // cmd parsers
     'location': (data) => {
         data = data[0];
+        data.host = parser.host(data.host, data.campus_id);
         data.begin_at = parser.dateTime(data.begin_at);
         data.end_at = parser.dateTime(data.end_at);
         if (data.end_at == "Now") {
