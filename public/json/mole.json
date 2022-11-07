@@ -1,5 +1,5 @@
 {
-    "version": "0.0.7",
+    "version": "0.1.0",
     "cmds": [
         {
             "cmd": "clear",
@@ -62,5 +62,36 @@
             },
             "api": true
         }
-    ]
+    ],
+    "todo": {
+        "REPORT": ["report", "usr_report", "r"],
+        "EVENTS": ["events"],
+        "EVENT_USERS": ["event_users", "e_urs"],
+        "EVENT_USER": ["event_user", "e_ur"],
+        "C2DO": ["c2do"],
+        "C2RE": ["c2re"],
+        "CDONE": [
+            ["cdone"],
+            "# TODO Idea: filter by cursus_id?"
+        ],
+        "CREDONE": [
+            ["credone"],
+            "# TODO Idea: filter by cursus_id?"
+        ],
+        "WHITENOVA": ["whitenova", "wnova"],
+        "PISCINE_NOVA": [
+            ["piscine_nova", "pnova"],
+            "# TODO Idea: use by default the piscine of the user",
+            "# TODO Idea: manual selection of piscine"
+        ],
+        "PCHISTORY": ["pchistory", "pchist"],
+        "SEARCH": ["search", "s"],
+        "CHUPIPANDI": null,
+        "piscine ranking": null,
+        "exam ranking": null,
+        "USR_ENTER_CURSUS": ["usr_enter_cursus", "uec"],
+        "PISCINEROS": ["piscineros"],
+        "SHOP": ["shop", "tienda", "economato"],
+        "LOCATION_RANKING": ["location_ranking", "loc_ranking", "loc_rank"]
+    }
 }
