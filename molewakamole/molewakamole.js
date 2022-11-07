@@ -115,9 +115,8 @@ const parser = {
         }
         return host;
     },
-    // cmd parsers
-    'location': (data) => {
-        data = data[0];
+    // general parsers
+    'locationParser': (data) => {
         data.host = parser.host(data.host, data.campus_id);
         data.begin_at = parser.dateTime(data.begin_at);
         data.end_at = parser.dateTime(data.end_at);
@@ -126,6 +125,15 @@ const parser = {
             data.not_ended = "Not ended";
         }
         data.campusName = parser.campusID2name(data.campus_id);
+        return data;
+    },
+    // cmd parsers
+    'location': (data) => {
+        return parser.locationParser(data[0]);
+    },
+    'loginHistory': (data) => {
+        for (let i = 0; i < data.length; i++)
+            data[i] = parser.locationParser(data[i]);
         return data;
     }
 }
