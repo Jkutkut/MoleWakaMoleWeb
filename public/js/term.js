@@ -28,6 +28,19 @@ window.onload = () =>  {
         inputTerm.focus();
     });
 
+    inputTerm.addEventListener('keydown', (e) => {
+        handleTab(e);
+        handleHistory(e);
+
+        // TODO
+        if (e.key === "ArrowLeft") {
+            removeHints();
+        }
+        else if (e.key === "ArrowRight") {
+            removeHints();
+        }
+    });
+
     inputTerm.focus();
 };
 
@@ -37,6 +50,7 @@ function executeCommand(command) {
         if (result.length > 0)
             addResult2Term(result);
     });
+    removeHints();
 }
 
 function addCmd2Term(command) {
@@ -48,4 +62,42 @@ function addResult2Term(result) {
     res.innerHTML = result;
     resultTerm.appendChild(res);
     window.scrollTo(0, document.body.scrollHeight);
+}
+
+// History
+var history = [];
+var historyIdx = 0;
+function handleHistory(e) {
+    if (e.key === "ArrowUp") {
+        // TODO history
+    }
+    else if (e.key === "ArrowDown") {
+        // TODO history
+    }
+    else
+        return;
+    removeHints();
+}
+
+// Auto completion
+
+function handleTab(e) {
+    if (e.key !== "Tab")
+        return;
+    e.preventDefault();
+
+    let position = inputTerm.selectionStart;
+    console.log("Tab pressed at position " + position);
+
+    // TODO hanle tab
+
+    setHints(['hint1', 'hint2', 'hint3']);
+}
+
+function setHints(hints) {
+    document.getElementById('inputHints').innerHTML = hints.join(' ');
+}
+
+function removeHints() {
+    setHints([]);
 }
