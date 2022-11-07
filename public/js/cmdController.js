@@ -109,6 +109,11 @@ function isValidValue(value, speckedValue) {
             return true;
         case 'number':
             return !isNaN(value);
+        case 'stringElement':
+            for (let s of speckedValue['elements'])
+                if (value == s)
+                    return true;
+            return false;
         default:
             return false;
     }
@@ -176,6 +181,10 @@ function valueFormat(value) {
             break;
         case 'number':
             type = 'number';
+            break;
+        case 'stringElement':
+            type = null;
+            value = {name: `<string>${value['elements'].join('</string>|<string>')}</string>`};
             break;
         default:
             type = null;
