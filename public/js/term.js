@@ -29,8 +29,10 @@ window.onload = () =>  {
     });
 
     inputTerm.addEventListener('keydown', (e) => {
-        handleTab(e);
-        handleHistory(e);
+        if (e.key == "Tab")
+            handleTab(e);
+        if (e.key === "ArrowUp" || e.key === "ArrowDown")
+            handleHistory(e);
 
         // TODO
         if (e.key === "ArrowLeft") {
@@ -45,6 +47,7 @@ window.onload = () =>  {
 };
 
 function executeCommand(command) {
+    addCmd2History(command);
     addCmd2Term(command);
     handleCmd(command).then((result) => {
         if (result.length > 0)
@@ -65,18 +68,35 @@ function addResult2Term(result) {
 }
 
 // History
-var history = [];
+const cmdHistory = [];
 var historyIdx = 0;
 function handleHistory(e) {
-    if (e.key === "ArrowUp") {
-        // TODO history
+    let position = inputTerm.selectionStart;
+    if (e.key === "ArrowUp" && position == 0) {
+        if (historyIdx < cmdHistory.length) {
+            historyIdx++;
+            updateWithHistory();
+        }
     }
-    else if (e.key === "ArrowDown") {
-        // TODO history
+    else if (e.key === "ArrowDown" && position == inputTerm.value.length) {
+        if (historyIdx > 0) {
+            historyIdx--;
+            updateWithHistory();
+        }
     }
-    else
-        return;
     removeHints();
+}
+
+function updateWithHistory() {
+    if (historyIdx == 0)
+        inputTerm.value = "";
+    else
+        inputTerm.value = cmdHistory[cmdHistory.length - historyIdx];
+}
+
+function addCmd2History(command) {
+    cmdHistory.push(command);
+    historyIdx = 0;
 }
 
 // Auto completion
