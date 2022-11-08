@@ -119,12 +119,12 @@ function handleTab(e) {
     while (i <= position)
         if (inputTerm.value[i++] == ' ')
             cmdIdx++;
-    let avaliable = [];
+    let available = [];
     if (cmdIdx == 0) { // Autocomplete cmd
         for (let command of CMDS['cmds']) {
             for (let alias of command['alias']) {
                 if (alias.startsWith(cmd[0]))
-                    avaliable.push(alias);
+                    available.push(alias);
             }
         }
     }
@@ -132,34 +132,41 @@ function handleTab(e) {
         let c = getCmd(cmd[0]);
         if (c == null)
             return removeHints();
+        // Check previous flag is missing a value
+        if (cmdIdx >= 2) {
+            let prevFlag = getFlag(cmd[cmdIdx - 1], c['flags']);
+            if (prevFlag && prevFlag['value']) {
+                return removeHints();
+            }
+        }
         for (let flag of c['flags']) {
             if (cmd[cmdIdx] == '' || flag['flag'].startsWith(cmd[cmdIdx])) // Flag
-                avaliable.push(flag['flag']);
+            available.push(flag['flag']);
             if (c['elements']) { // Value
                 for (let falias of flag['elements']) {
                     if (cmd[cmdIdx] == '' || falias.startsWith(cmd[cmdIdx]))
-                        avaliable.push(falias);
+                    available.push(falias);
                 }
             }
         }
     }
 
-    switch (avaliable.length) {
+    switch (available.length) {
         case 0:
             return removeHints();
         case 1:
-            cmd[cmdIdx] = avaliable[0];
+            cmd[cmdIdx] = available[0];
             inputTerm.value = cmd.join(' ');
             removeHints();
             break;
         default:
-            setHints(avaliable);
+            setHints(available);
             // * Note: all available elements are longer than cmd[cmd_index]
             let i = cmd[cmdIdx].length;
             let running = true;
             while (running) {
-                for (let e of avaliable) {
-                    if (i >= e.length || i >= avaliable[0].length || avaliable[0][i] != e[i]) {
+                for (let e of available) {
+                    if (i >= e.length || i >= available[0].length || available[0][i] != e[i]) {
                         running = false;
                         break;
                     }
@@ -167,7 +174,7 @@ function handleTab(e) {
                 if (running)
                     i++;
             }
-            cmd[cmdIdx] = avaliable[0].substring(0, i);
+            cmd[cmdIdx] = available[0].substring(0, i);
             inputTerm.value = cmd.join(' ');
     }
 }
