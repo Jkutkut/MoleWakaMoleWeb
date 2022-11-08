@@ -31,15 +31,18 @@ window.onload = () =>  {
     inputTerm.addEventListener('keydown', (e) => {
         if (e.key == "Tab")
             handleTab(e);
+        else
+            removeHints();
+
         if (e.key === "ArrowUp" || e.key === "ArrowDown")
             handleHistory(e);
 
         // TODO
         if (e.key === "ArrowLeft") {
-            removeHints();
+            
         }
         else if (e.key === "ArrowRight") {
-            removeHints();
+            
         }
     });
 
@@ -107,11 +110,66 @@ function handleTab(e) {
     e.preventDefault();
 
     let position = inputTerm.selectionStart;
-    console.log("Tab pressed at position " + position);
+    // Check no in the middle of a cmd or flag
+    if (position < inputTerm.value.length && inputTerm.value[position] != ' ')
+        return removeHints();
+    // Autocompletion
+    let cmd = inputTerm.value.split(' ');
+    let i = 0, cmdIdx = 0;
+    while (i <= position)
+        if (inputTerm.value[i++] == ' ')
+            cmdIdx++;
+    let avaliable = [];
+    if (cmdIdx == 0) { // Autocomplete cmd
+        for (let command of CMDS['cmds']) {
+            for (let alias of command['alias']) {
+                if (alias.startsWith(cmd[0]))
+                    avaliable.push(alias);
+            }
+        }
+    }
+    else { // Autocomplete flag
+        let c = getCmd(cmd[0]);
+        if (c == null)
+            return removeHints();
+        for (let flag of c['flags']) {
+            if (cmd[cmdIdx] == '' || flag['flag'].startsWith(cmd[cmdIdx])) // Flag
+                avaliable.push(flag['flag']);
+            if (c['elements']) { // Value
+                for (let falias of flag['elements']) {
+                    if (cmd[cmdIdx] == '' || falias.startsWith(cmd[cmdIdx]))
+                        avaliable.push(falias);
+                }
+            }
+        }
+    }
 
-    // TODO hanle tab
-
-    setHints(['hint1', 'hint2', 'hint3']);
+    switch (avaliable.length) {
+        case 0:
+            return removeHints();
+        case 1:
+            cmd[cmdIdx] = avaliable[0];
+            inputTerm.value = cmd.join(' ');
+            removeHints();
+            break;
+        default:
+            setHints(avaliable);
+            // * Note: all available elements are longer than cmd[cmd_index]
+            let i = cmd[cmdIdx].length;
+            let running = true;
+            while (running) {
+                for (let e of avaliable) {
+                    if (i >= e.length || i >= avaliable[0].length || avaliable[0][i] != e[i]) {
+                        running = false;
+                        break;
+                    }
+                }
+                if (running)
+                    i++;
+            }
+            cmd[cmdIdx] = avaliable[0].substring(0, i);
+            inputTerm.value = cmd.join(' ');
+    }
 }
 
 function setHints(hints) {
