@@ -2,7 +2,7 @@ terminal {
     height: auto;
 }
 
-input, input:focus {
+textarea, textarea:focus {
     background: inherit;
     border: inherit;
     padding: 0;
@@ -12,9 +12,16 @@ input, input:focus {
     font: inherit;
     font-family: inherit;
     outline: none;
+    resize: none;
+    overflow-y: hidden;
 }
 
 #inputTerm {
     width: 90vw;
-    line-height: normal;
+    height: 1rem;
+}
+
+term-control > pre {
+    display: flex;
+    gap: 0.5rem;
 }

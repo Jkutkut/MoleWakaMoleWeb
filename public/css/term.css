@@ -41,6 +41,7 @@ pre {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 
     margin: 0;
+    line-height: 1rem;
 }
 
 .title {

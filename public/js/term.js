@@ -75,13 +75,13 @@ const cmdHistory = [];
 var historyIdx = 0;
 function handleHistory(e) {
     let position = inputTerm.selectionStart;
-    if (e.key === "ArrowUp" && position == 0) {
+    if (e.key === "ArrowUp") {
         if (historyIdx < cmdHistory.length) {
             historyIdx++;
             updateWithHistory();
         }
     }
-    else if (e.key === "ArrowDown" && position == inputTerm.value.length) {
+    else if (e.key === "ArrowDown") {
         if (historyIdx > 0) {
             historyIdx--;
             updateWithHistory();
@@ -95,6 +95,11 @@ function updateWithHistory() {
         inputTerm.value = "";
     else
         inputTerm.value = cmdHistory[cmdHistory.length - historyIdx];
+
+    // Move textArea cursor to the end
+    const len = inputTerm.value.length;
+    inputTerm.setSelectionRange(len - 1, len);
+    
 }
 
 function addCmd2History(command) {

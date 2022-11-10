@@ -1,9 +1,9 @@
 {
-    "version": "0.1.1",
+    "version": "0.1.2",
     "cmds": [
         {
             "cmd": "clear",
-            "desc": "Clear the console.",
+            "desc": "Clears the console.",
             "alias": ["clear"],
             "flags": [],
             "value": null,
@@ -11,7 +11,7 @@
         },
         {
             "cmd": "help",
-            "desc": "Show the help menu.",
+            "desc": "Shows the help menu.",
             "alias": ["help"],
             "flags": [],
             "value": null,
@@ -19,7 +19,7 @@
         },
         {
             "cmd": "man",
-            "desc": "Show the manual for a command.",
+            "desc": "Shows the manual for a command.",
             "alias": ["man"],
             "flags": [],
             "value": {
@@ -29,7 +29,7 @@
         },
         {
             "cmd": "location",
-            "desc": "Show the current location of the given user login.",
+            "desc": "Shows the current location of the given user login.",
             "alias": ["location", "loc"],
             "flags": [],
             "value": {
@@ -40,7 +40,7 @@
         },
         {
             "cmd": "loginHistory",
-            "desc": "Show the login history of the given user login.",
+            "desc": "Shows the login history of the given user login.",
             "alias": ["loginHistory", "loginhistory", "lHist", "lhist"],
             "flags": [
                 {
