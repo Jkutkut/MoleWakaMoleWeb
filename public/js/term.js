@@ -78,6 +78,7 @@ function addResult2Term(result) {
 const cmdHistory = [];
 var historyIdx = 0;
 function handleHistory(e) {
+    e.preventDefault();
     if (e.key === "ArrowUp") {
         if (historyIdx < cmdHistory.length) {
             historyIdx++;
@@ -101,7 +102,7 @@ function updateWithHistory() {
 
     // Move textArea cursor to the end
     const len = inputTerm.value.length;
-    inputTerm.setSelectionRange(len - 1, len);
+    inputTerm.setSelectionRange(len, len);
 }
 
 function addCmd2History(command) {
@@ -137,6 +138,7 @@ function handleTab(e) {
         }
     }
     else { // Autocomplete flag
+        // TODO hide used flags
         let c = getCmd(cmd[0]);
         if (c == null)
             return removeHints();
