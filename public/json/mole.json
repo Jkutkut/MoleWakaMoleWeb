@@ -1,5 +1,5 @@
 {
-    "version": "0.1.2",
+    "version": "0.1.3",
     "cmds": [
         {
             "cmd": "clear",
@@ -41,7 +41,7 @@
         {
             "cmd": "loginHistory",
             "desc": "Shows the login history of the given user login.",
-            "alias": ["loginHistory", "loginhistory", "lHist", "lhist"],
+            "alias": ["loginHistory", "lHist"],
             "flags": [
                 {
                     "flag": "-n",

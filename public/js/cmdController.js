@@ -58,9 +58,10 @@ function handleMan(cmdArr, cmd) {
 // ********** cmd tools **********
 
 function getCmd(cmd) {
+    let cmdNoCase = cmd.toLowerCase();
     for (let i = 0, alias; i < CMDS.cmds.length; i++) {
         for (alias of CMDS.cmds[i]['alias']) {
-            if (alias === cmd)
+            if (alias.toLowerCase() === cmdNoCase)
                 return CMDS.cmds[i];
         }
     }

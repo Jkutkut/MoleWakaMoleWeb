@@ -128,9 +128,10 @@ function handleTab(e) {
             cmdIdx++;
     let available = [];
     if (cmdIdx == 0) { // Autocomplete cmd
+        let cmdNoCase = cmd[0].toLowerCase();
         for (let command of CMDS['cmds']) {
             for (let alias of command['alias']) {
-                if (alias.startsWith(cmd[0]))
+                if (alias.toLowerCase().startsWith(cmdNoCase))
                     available.push(alias);
             }
         }
@@ -141,18 +142,22 @@ function handleTab(e) {
             return removeHints();
         // Check previous flag is missing a value
         if (cmdIdx >= 2) {
+            // TODO rework this to show the elements
             let prevFlag = getFlag(cmd[cmdIdx - 1], c['flags']);
-            if (prevFlag && prevFlag['value']) {
+            if (prevFlag && prevFlag['value'] && // Exists and has a value
+                prevFlag['value']['type'] != 'stringElement') {
                 return removeHints();
             }
         }
+        let flagNoCase = cmd[cmdIdx].toLowerCase();
         for (let flag of c['flags']) {
-            if (cmd[cmdIdx] == '' || flag['flag'].startsWith(cmd[cmdIdx])) // Flag
-            available.push(flag['flag']);
-            if (c['elements']) { // Value
-                for (let falias of flag['elements']) {
-                    if (cmd[cmdIdx] == '' || falias.startsWith(cmd[cmdIdx]))
-                    available.push(falias);
+            if (cmd[cmdIdx] == '' || flag['flag'].toLowerCase().startsWith(flagNoCase)) // Flag
+                available.push(flag['flag']);
+            if (c['elements']) { // Value // TODO
+                for (let fValue of flag['elements']) {
+                    if (cmd[cmdIdx] == '' || fValue.toLowerCase().startsWith(flagNoCase))
+                        available.push(fValue);
+                    console.log(fValue);
                 }
             }
         }
@@ -173,7 +178,8 @@ function handleTab(e) {
             let running = true;
             while (running) {
                 for (let e of available) {
-                    if (i >= e.length || i >= available[0].length || available[0][i] != e[i]) {
+                    if (i >= e.length || i >= available[0].length ||
+                        available[0][i].toLowerCase() != e[i].toLowerCase()) {
                         running = false;
                         break;
                     }
