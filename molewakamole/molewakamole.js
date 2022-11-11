@@ -140,7 +140,8 @@ const parser = {
         for (let i = 0; i < data.length; i++)
             data[i] = parser.locationParser(data[i]);
         return data;
-    }
+    },
+    'search': (data) => data
 }
 
 module.exports = Molewakamole;
