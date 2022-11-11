@@ -11,19 +11,21 @@
 </head>
 <body>
     <terminal>
-<pre class="title">
+        {{!-- <pre class="title">
 ███    ███  ██████  ██      ███████ ██     ██  █████  ██   ██  █████  ███    ███  ██████  ██      ███████
 ████  ████ ██    ██ ██      ██      ██     ██ ██   ██ ██  ██  ██   ██ ████  ████ ██    ██ ██      ██     
 ██ ████ ██ ██    ██ ██      █████   ██  █  ██ ███████ █████   ███████ ██ ████ ██ ██    ██ ██      █████  
 ██  ██  ██ ██    ██ ██      ██      ██ ███ ██ ██   ██ ██  ██  ██   ██ ██  ██  ██ ██    ██ ██      ██     
 ██      ██  ██████  ███████ ███████  ███ ███  ██   ██ ██   ██ ██   ██ ██      ██  ██████  ███████ ███████
-</pre>
+        </pre> --}}
         <term-result id="resultTerm">
             {{!-- Results here --}}
         </term-result>
         <term-control>
             <pre>
-<cmd>$></cmd> <textarea id="inputTerm" type="text" spellcheck="false"></textarea>
+<cmd>$></cmd><textarea id="inputTerm" spellcheck="false"></textarea>
+            </pre>
+            <pre>
 <comment><hints id="inputHints"></hints></comment>
             </pre>
         </term-control>
