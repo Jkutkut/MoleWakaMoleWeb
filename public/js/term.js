@@ -140,25 +140,27 @@ function handleTab(e) {
         let c = getCmd(cmd[0]);
         if (c == null)
             return removeHints();
-        // Check previous flag is missing a value
-        if (cmdIdx >= 2) {
-            // TODO rework this to show the elements
-            let prevFlag = getFlag(cmd[cmdIdx - 1], c['flags']);
-            if (prevFlag && prevFlag['value'] && // Exists and has a value
-                prevFlag['value']['type'] != 'stringElement') {
-                return removeHints();
-            }
-        }
+
+        let completeFlags = true;
         let flagNoCase = cmd[cmdIdx].toLowerCase();
-        for (let flag of c['flags']) {
-            if (cmd[cmdIdx] == '' || flag['flag'].toLowerCase().startsWith(flagNoCase)) // Flag
-                available.push(flag['flag']);
-            if (c['elements']) { // Value // TODO
-                for (let fValue of flag['elements']) {
-                    if (cmd[cmdIdx] == '' || fValue.toLowerCase().startsWith(flagNoCase))
-                        available.push(fValue);
-                    console.log(fValue);
+        if (cmdIdx >= 2) { // Check if previous flag is missing a value
+            let prevFlag = getFlag(cmd[cmdIdx - 1], c['flags']);
+            if (prevFlag != null && prevFlag['value'] != null) {
+                if (prevFlag['value']['type'] == 'stringElement') { // if autocomplete can be done
+                    completeFlags = false;
+                    for (let v of prevFlag['value']['elements']) {
+                        if (v.toLowerCase().startsWith(flagNoCase))
+                            available.push(v);
+                    }
                 }
+                else
+                    return removeHints();
+            } // else, autocomplete flags
+        }
+        if (completeFlags) {
+            for (let flag of c['flags']) {
+                if (cmd[cmdIdx] == '' || flag['flag'].toLowerCase().startsWith(flagNoCase))
+                    available.push(flag['flag']);
             }
         }
     }

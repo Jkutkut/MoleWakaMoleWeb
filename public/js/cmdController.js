@@ -1,8 +1,23 @@
-var CMDS = null;
+var CMDS;
 
 window.addEventListener('load', async () => {
     let response = await fetch('/json/mole.json');
-    CMDS = await response.json();
+    CMDS = await response.json().then(data => {
+        for (let cmd of data.cmds) {
+            if (cmd['value'] !== null && cmd['value']['type'] === 'stringElement' &&
+                typeof cmd['value']['elements'] === 'string') {
+                cmd['value']['elements'] = data['lib'][cmd['value']['elements']];
+            }
+    
+            for (let flag of cmd['flags']) {
+                if (flag['value'] !== null && flag['value']['type'] === 'stringElement' &&
+                    typeof flag['value']['elements'] === 'string') {
+                    flag['value']['elements'] = data['lib'][flag['value']['elements']];
+                }
+            }
+        }
+        return data;
+    });
 });
 
 // ********** handle cmd **********
@@ -185,7 +200,7 @@ function valueFormat(value) {
             break;
         case 'stringElement':
             type = null;
-            value = {name: `<string>${value['elements'].join('</string>|<string>')}</string>`};
+            value = {name: `<string>${value['name']}</string>`};
             break;
         default:
             type = null;
