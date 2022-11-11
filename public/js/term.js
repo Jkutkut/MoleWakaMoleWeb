@@ -50,6 +50,10 @@ window.onload = () =>  {
 };
 
 function executeCommand(command) {
+    // Normalize command
+    command = command.replaceAll(/\n/g, '');
+    command = command.replaceAll(/[ \t]+/g, ' ').trim();
+
     addCmd2History(command);
     addCmd2Term(command);
     handleCmd(command).then((result) => {
@@ -74,7 +78,6 @@ function addResult2Term(result) {
 const cmdHistory = [];
 var historyIdx = 0;
 function handleHistory(e) {
-    let position = inputTerm.selectionStart;
     if (e.key === "ArrowUp") {
         if (historyIdx < cmdHistory.length) {
             historyIdx++;
@@ -99,7 +102,6 @@ function updateWithHistory() {
     // Move textArea cursor to the end
     const len = inputTerm.value.length;
     inputTerm.setSelectionRange(len - 1, len);
-    
 }
 
 function addCmd2History(command) {
