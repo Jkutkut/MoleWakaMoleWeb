@@ -1,5 +1,5 @@
 {
-    "version": "0.2.0",
+    "version": "0.2.1",
     "cmds": [
         {
             "cmd": "clear",
@@ -117,7 +117,8 @@
     "lib": {
         "MONTHS": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         "42CAMPUSES": ["MADRID", "CODAM", "MALAGA", "URDULIZ", "BARCELONA", "WOLFSBURG"],
-        "42CAMPUSES_ID": [22,       14,      37,       40,         46,          44]
+        "42CAMPUSES_ID": [22,       14,      37,       40,         46,          44],
+        "DEF_CAMPUS_ID": 22
     },
     "todo": {
         "ideas": [

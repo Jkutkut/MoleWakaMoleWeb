@@ -1,11 +1,14 @@
 async function handleCmdAPI(cmdArr, cmd) {
     let request;
-    switch(cmd['cmd']) {
+    switch(cmd['cmd']) { // TODO implement with dict
         case 'location':
             request = handleLocation(cmdArr, cmd);
             break;
         case 'loginHistory':
             request = handleLoginHistory(cmdArr, cmd);
+            break;
+        case 'search':
+            request = handleSearch(cmdArr, cmd);
             break;
         default:
             return "<error>Error</error>: API method not implemented";
@@ -41,6 +44,37 @@ function handleLoginHistory(cmdArr, cmd) {
         filters: [],
         multiRequest: false,
         pageSize: amount
+    };
+}
+
+function handleSearch(cmdArr, cmd) {
+    let search;
+    let filters = [];
+    const value = cmdArr[cmdArr.length - 1];
+    let campus_id = CMDS['lib']['DEF_CAMPUS_ID'];
+
+    let idx = 1;
+    while (idx < cmdArr.length - 1) {
+        if (cmdArr[idx] == '-t')
+            search = `filter[${cmdArr[++idx]}]=${value}`;
+        else if (cmdArr[idx] == '-c') {
+            let campus_id = CMDS['lib']['42CAMPUSES_ID'][
+                CMDS['lib']['42CAMPUSES'].indexOf(cmdArr[++idx])
+            ];
+            filters.push(`filter[campus_id]=${campus_id}`);
+        }
+        else if (cmdArr[idx] == '--pool_month')
+            filters.push(`filter[pool_month]=${cmdArr[++idx]}`);
+        else if (cmdArr[idx] == '--pool_year')
+            filters.push(`filter[pool_year]=${cmdArr[++idx]}`);
+        idx++;
+    }
+
+    filters.push(search);
+    return {
+        cmd: cmd['cmd'],
+        endpoint: `/v2/campus/${campus_id}/users`,
+        filters: filters
     };
 }
 
