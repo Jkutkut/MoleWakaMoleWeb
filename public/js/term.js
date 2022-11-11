@@ -163,7 +163,7 @@ function handleTab(e) {
             let usedFlags = cmd.filter(c => c.startsWith('-'));
             for (let flag of c['flags']) {
                 if (cmd[cmdIdx] == '' || flag['flag'].toLowerCase().startsWith(flagNoCase))
-                    if (!usedFlags.includes(flag['flag']))
+                    if (!usedFlags.includes(flag['flag']) || flag['repeatable'])
                         available.push(flag['flag']);
             }
         }

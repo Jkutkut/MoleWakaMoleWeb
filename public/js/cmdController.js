@@ -87,9 +87,9 @@ function isValidCmd(cmdArr, cmd) {
     let idxEnd = cmdArr.length - 1;
     if (cmd['value'] !== null)
         idxEnd--;
-    // Check cmd is valid alias?
-    let idx = 1;
+    // ? Check cmd is valid alias?
     // Check flags
+    let idx = 1;
     let flag;
     while (idx <= idxEnd) {
         flag = getFlag(cmdArr[idx], cmd['flags']);
@@ -107,6 +107,18 @@ function isValidCmd(cmdArr, cmd) {
         if (!flag['optional'] && !cmdArr.includes(flag['flag']))
             return false;
     }
+
+    // Check for duplicated flag where repeatable is false.
+    let nonRepeatableFlags = cmd['flags'].filter(f => !f['repeatable']).map(f => f['flag']);
+    let flagNoCase, sum, c;
+    for (flag of nonRepeatableFlags) {
+        sum = 0;
+        flagNoCase = flag.toLowerCase();
+        for (c of cmdArr)
+            if (c == flagNoCase && ++sum > 1)
+                return false; // If cmdArr has more than one match of the flag.
+    }
+
     // Check value
     if (cmd['value'] !== null) {
         if (cmdArr.length <= idx)
@@ -130,6 +142,8 @@ function isValidValue(value, speckedValue) {
                 if (value == s)
                     return true;
             return false;
+        case 'boolean':
+            return value == 'true' || value == 'false';
         default:
             return false;
     }
@@ -201,6 +215,9 @@ function valueFormat(value) {
         case 'stringElement':
             type = null;
             value = {name: `<string>${value['name']}</string>`};
+            break;
+        case 'boolean':
+            type = 'boolean';
             break;
         default:
             type = null;
