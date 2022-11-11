@@ -160,9 +160,11 @@ function handleTab(e) {
             } // else, autocomplete flags
         }
         if (completeFlags) {
+            let usedFlags = cmd.filter(c => c.startsWith('-'));
             for (let flag of c['flags']) {
                 if (cmd[cmdIdx] == '' || flag['flag'].toLowerCase().startsWith(flagNoCase))
-                    available.push(flag['flag']);
+                    if (!usedFlags.includes(flag['flag']))
+                        available.push(flag['flag']);
             }
         }
     }
