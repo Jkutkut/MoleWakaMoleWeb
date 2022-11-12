@@ -163,16 +163,29 @@ function descriptionCmd(cmd, fullUsage = false) {
     let usage = `<string>${cmd['cmd']}</string>\n`;
     usage += `  <cmd>$></cmd> ${usageCmd(cmd)}\n`;
     if (fullUsage) {
-        usage += `  Description:\n    ${cmd['desc']}\n`;
+        usage += `\n  Description:\n    ${cmd['desc']}\n`;
+        if (cmd['alias'].length > 1)
+            usage += `  Aliases: ${cmd['alias'].join(', ')}\n`;
         if (cmd['flags'].length > 0) {
-            usage += `  Flags:\n`;
+            usage += `\n  Flags:\n`;
             for (let flag of cmd['flags']) {
                 usage += `    ${flagFormat(flag, optionalFormat = false)}\n`;
                 usage += `      ${flag['desc']}\n`;
+                if (flag['repeatable'])
+                    usage += `      This flag can be used more than once\n`;
+                if (flag['value']) {
+                    usage += `      Value ${valueFormat(flag['value'], optionalFormat = false)}: `;
+                    switch(flag['value']['type']) {
+                        case 'stringElement':
+                            usage += `<string>${flag['value']['elements'].join('</string>, <string>')}</string>`;
+                            break;
+                        default:
+                            usage += `<${flag['value']['type']}>${flag['value']['type']}</${flag['value']['type']}>`;
+                    }
+                    usage += `\n`;
+                }
+                usage += `\n`;
             }
-        }
-        if (cmd['alias'].length > 1) {
-            usage += `  Aliases: ${cmd['alias'].join(', ')}\n`;
         }
     }
     return usage;
@@ -203,7 +216,7 @@ function flagFormat(flag, optionalFormat = true) {
     return usage;
 }
 
-function valueFormat(value) {
+function valueFormat(value, optionalFormat = true) {
     let type;
     switch (value['type']) {
         case 'string':
@@ -228,5 +241,8 @@ function valueFormat(value) {
         flagStart = `<${type}>`;
         flagEnd = `</${type}>`;
     }
-    return `&#60;${flagStart}${value['name']}${flagEnd}&#62;`;
+    let result = `${flagStart}${value['name']}${flagEnd}`;
+    if (optionalFormat)
+        result = `&#60;${result}&#62;`;
+    return result;
 }

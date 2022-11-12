@@ -1,5 +1,5 @@
 {
-    "version": "0.3.0",
+    "version": "0.3.1",
     "cmds": [
         {
             "cmd": "clear",
@@ -145,7 +145,7 @@
                 },
                 {
                     "flag": "-f",
-                    "desc": "Apply a filter to the request. Can be a filter, range or sort filter.",
+                    "desc": "Apply a restriction to the request. Can be a filter, range or sort filter.",
                     "value": {
                         "name": "FILTER",
                         "type": "string"
