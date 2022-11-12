@@ -138,7 +138,6 @@ function handleTab(e) {
         }
     }
     else { // Autocomplete flag
-        // TODO hide used flags
         let c = getCmd(cmd[0]);
         if (c == null)
             return removeHints();
@@ -147,14 +146,18 @@ function handleTab(e) {
         let flagNoCase = cmd[cmdIdx].toLowerCase();
         if (cmdIdx >= 2) { // Check if previous flag is missing a value
             let prevFlag = getFlag(cmd[cmdIdx - 1], c['flags']);
-            if (prevFlag != null && prevFlag['value'] != null) {
-                if (prevFlag['value']['type'] == 'stringElement') { // if autocomplete can be done
-                    completeFlags = false;
-                    for (let v of prevFlag['value']['elements']) {
+            if (prevFlag != null && prevFlag['value'] != null) { // If value is required
+                completeFlags = false;
+                if (prevFlag['value']['type'] == 'stringElement')
+                    for (let v of prevFlag['value']['elements'])
                         if (v.toLowerCase().startsWith(flagNoCase))
                             available.push(v);
-                    }
-                }
+                else if (prevFlag['value']['type'] == 'boolean')
+                    available.push('true', 'false');
+                else if (prevFlag['value']['type'] == 'number')
+                    return setHints(['&lt;number&gt;']);
+                else if (prevFlag['value']['type'] == 'string')
+                    return setHints(['&lt;string&gt;']);
                 else
                     return removeHints();
             } // else, autocomplete flags
@@ -168,6 +171,8 @@ function handleTab(e) {
             }
         }
     }
+
+    // ? Hits for value?
 
     switch (available.length) {
         case 0:
