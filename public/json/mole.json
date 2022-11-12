@@ -1,5 +1,5 @@
 {
-    "version": "0.2.2",
+    "version": "0.3.0",
     "cmds": [
         {
             "cmd": "clear",
@@ -114,6 +114,48 @@
             ],
             "value": {
                 "name": "LOGIN",
+                "type": "string"
+            },
+            "api": true
+        },
+        {
+            "cmd": "mget",
+            "desc": "Manual GET request to the API.",
+            "alias": ["mget"],
+            "flags": [
+                {
+                    "flag": "--multi_request",
+                    "desc": "Make a multi request call.",
+                    "value": {
+                        "name": "MULTI_REQUEST",
+                        "type": "boolean"
+                    },
+                    "optional": false,
+                    "repeatable": false
+                },
+                {
+                    "flag": "--page_size",
+                    "desc": "Page size.",
+                    "value": {
+                        "name": "PAGE_SIZE",
+                        "type": "number"
+                    },
+                    "optional": false,
+                    "repeatable": false
+                },
+                {
+                    "flag": "-f",
+                    "desc": "Apply a filter to the request. Can be a filter, range or sort filter.",
+                    "value": {
+                        "name": "FILTER",
+                        "type": "string"
+                    },
+                    "optional": true,
+                    "repeatable": true
+                }
+            ],
+            "value": {
+                "name": "URL",
                 "type": "string"
             },
             "api": true

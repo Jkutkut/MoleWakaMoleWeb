@@ -10,6 +10,9 @@ async function handleCmdAPI(cmdArr, cmd) {
         case 'search':
             request = handleSearch(cmdArr, cmd);
             break;
+        case 'mget':
+            request = handleMget(cmdArr, cmd);
+            break;
         default:
             return "<error>Error</error>: API method not implemented";
     }
@@ -76,6 +79,28 @@ function handleSearch(cmdArr, cmd) {
         endpoint: `/v2/campus/${campus_id}/users`,
         filters: filters
     };
+}
+
+function handleMget(cmdArr, cmd) {
+    let filters = [], multiRequest, pageSize;
+    let idx = 1;
+    while (idx < cmdArr.length - 1) {
+        console.log(cmdArr[idx])
+        if (cmdArr[idx] == '--multi_request')
+            multiRequest = cmdArr[++idx] == 'true';
+        else if (cmdArr[idx] == '--page_size')
+            pageSize = parseInt(cmdArr[++idx]);
+        else if (cmdArr[idx] == '-f')
+            filters.push(cmdArr[++idx]);
+        idx++;
+    }
+    return {
+        cmd: cmd['cmd'],
+        endpoint: cmdArr[cmdArr.length - 1],
+        filters: filters,
+        multiRequest: multiRequest,
+        pageSize: pageSize
+    }
 }
 
 async function makeRequestAPI(request) {
