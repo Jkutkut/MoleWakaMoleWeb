@@ -64,14 +64,25 @@ function executeCommand(command) {
 }
 
 function addCmd2Term(command) {
-    addResult2Term(`<cmd>$></cmd> ${command}`);
+    let container = add2Term(`<cmd>$></cmd> ${command}`);
+    container.classList.add("collapsable_btn");
+    container.addEventListener("click", () => {
+        let next = container.nextElementSibling;
+        next.classList.toggle("collapsable"); // Error: function does not exists
+    });
+
 }
 
 function addResult2Term(result) {
+    let res = add2Term(result);
+}
+
+function add2Term(result) {
     let res = document.createElement('pre');
     res.innerHTML = result;
     resultTerm.appendChild(res);
     window.scrollTo(0, document.body.scrollHeight);
+    return res;
 }
 
 // History
@@ -111,7 +122,7 @@ function addCmd2History(command) {
 }
 
 // Auto completion
-
+// TODO search -t does not show login or any completion option
 function handleTab(e) {
     if (e.key !== "Tab")
         return;

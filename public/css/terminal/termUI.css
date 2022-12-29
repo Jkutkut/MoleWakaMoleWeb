@@ -25,3 +25,22 @@ term-control > pre {
     display: flex;
     gap: 0.5rem;
 }
+
+.collapsable_btn:hover {
+    /* font-size: calc(100% + 10%); */
+    font-weight: bold;
+}
+
+.collapsable_btn + pre, .collapsable_btn:hover + pre {
+    transition: 0.085s;
+}
+
+.collapsable_btn:hover + pre {
+    filter: grayscale(80%) opacity(20%);
+    transform: scaleY(0);
+    height: 0px;
+}
+
+.collapsable {
+    display: none;
+}
