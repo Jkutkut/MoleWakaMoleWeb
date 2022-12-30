@@ -73,13 +73,35 @@ function addCmd2Term(command) {
 
 }
 
-function addResult2Term(result) {
-    let res = add2Term(result);
+function addResult2Term(result, append = false) {
+    let res = add2Term(result, append);
+    return res;
 }
 
-function add2Term(result) {
+function addChart2term(data) {
+    let canvas = document.createElement('canvas');
+    let pre = addResult2Term(canvas, true);
+    pre.classList.add('chart');
+    let ctx = canvas.getContext('2d');
+    let chart = new Chart(ctx, data);
+
+    canvas.addEventListener('click', () => {
+        let img = chart.toBase64Image('image/jpeg', 1);
+        // Download image
+        // TODO - Add download button
+        let a = document.createElement('a');
+        a.href = img;
+        a.download = 'chart.jpg';
+        a.click();
+    });
+}
+
+function add2Term(result, append = false) {
     let res = document.createElement('pre');
-    res.innerHTML = result;
+    if (append)
+        res.appendChild(result);
+    else
+        res.innerHTML = result;
     resultTerm.appendChild(res);
     window.scrollTo(0, document.body.scrollHeight);
     return res;

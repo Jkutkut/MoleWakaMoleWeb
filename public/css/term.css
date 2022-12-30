@@ -15,13 +15,16 @@
     --font-color: var(--c-white);
     --line-height: 2.5ch;
     --tab-size: 4;
+
+    --bg: var(--c-black);
+    --font-color: var(--c-white);
 }
 
 body {
-    background-color: var(--c-black);
+    background-color: var(--bg);
 
     /* Font */
-    color: var(--c-white);
+    color: var(--font-color);
     font-family: var(--font);
     line-height: var(--line-height);
     tab-size: var(--tab-size);
