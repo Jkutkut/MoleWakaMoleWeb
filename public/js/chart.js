@@ -23,6 +23,7 @@ window.addEventListener('load', () => {
     Chart.defaults.borderColor = termColors.grey + '33';
 
     // TODO remove points in each value
+    // TODO change font family
  
     // addCmd2Term('chart');
     // addChart2term(createChart(

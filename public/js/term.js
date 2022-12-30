@@ -73,14 +73,14 @@ function addCmd2Term(command) {
 
 }
 
-function addResult2Term(result, append = false) {
-    let res = add2Term(result, append);
+function addResult2Term(result) {
+    let res = add2Term(result);
     return res;
 }
 
 function addChart2term(data) {
     let canvas = document.createElement('canvas');
-    let pre = addResult2Term(canvas, true);
+    let pre = addResult2Term(canvas);
     pre.classList.add('chart');
     let ctx = canvas.getContext('2d');
     let chart = new Chart(ctx, data);
@@ -96,12 +96,12 @@ function addChart2term(data) {
     });
 }
 
-function add2Term(result, append = false) {
+function add2Term(result) {
     let res = document.createElement('pre');
-    if (append)
-        res.appendChild(result);
-    else
+    if (typeof result === 'string')
         res.innerHTML = result;
+    else
+        res.appendChild(result);
     resultTerm.appendChild(res);
     window.scrollTo(0, document.body.scrollHeight);
     return res;

@@ -1,14 +1,18 @@
 async function handleCmdAPI(cmdArr, cmd) {
-    let request;
     if (!apiCmdsHandler.hasOwnProperty(cmd['cmd']))
         return "<error>Error</error>: API method not implemented";
-    request = apiCmdsHandler[cmd['cmd']](cmdArr, cmd);
+    const request = apiCmdsHandler[cmd['cmd']](cmdArr, cmd);
+    const responseHandler = apiResponseHandler[cmd['cmd']] ||  ['def'];
+
     console.log(request);
-    return await makeRequestAPI(request);
+    const response = await makeRequestAPI(request);
+    if (response.status != 200)
+        return `<error>Error</error>: ${response.status} ${response.statusText}`;
+    return responseHandler(cmdArr, cmd, response);
 }
 
 async function makeRequestAPI(request) {
-    let response = await fetch(
+    return await fetch(
         '/api/request',
         {
             method: 'POST',
@@ -18,10 +22,12 @@ async function makeRequestAPI(request) {
             body: JSON.stringify(request)
         }
     );
-    if (response.status != 200)
-        return `<error>Error</error>: ${response.status} ${response.statusText}`;
-    return response.text();
 }
+
+const apiResponseHandler = {
+    def: (cmdArr, cmd, response) => response.text(),
+    // TODO Whitenova
+};
 
 const apiCmdsHandler = {
     location: (cmdArr, cmd) => {
