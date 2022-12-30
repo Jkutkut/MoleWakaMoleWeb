@@ -79,16 +79,17 @@ function addResult2Term(result) {
 }
 
 function addChart2term(data) {
-    let canvas = document.createElement('canvas');
-    let pre = addResult2Term(canvas);
+    const canvas = document.createElement('canvas');
+    const pre = addResult2Term(canvas);
     pre.classList.add('chart');
-    let ctx = canvas.getContext('2d');
-    let chart = new Chart(ctx, data);
+    const saveBtn = document.createElement('save_btn');
+    saveBtn.innerHTML = 'Save as image';
+    pre.appendChild(saveBtn);
+    const ctx = canvas.getContext('2d');
+    const chart = new Chart(ctx, data);
 
-    canvas.addEventListener('click', () => {
+    saveBtn.addEventListener('click', () => {
         let img = chart.toBase64Image('image/jpeg', 1);
-        // Download image
-        // TODO - Add download button
         let a = document.createElement('a');
         a.href = img;
         a.download = 'chart.jpg';
