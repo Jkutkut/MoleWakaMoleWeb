@@ -83,7 +83,17 @@ function addChart2term(data) {
     let pre = addResult2Term(canvas, true);
     pre.classList.add('chart');
     let ctx = canvas.getContext('2d');
-    new Chart(ctx, data);
+    let chart = new Chart(ctx, data);
+
+    canvas.addEventListener('click', () => {
+        let img = chart.toBase64Image('image/jpeg', 1);
+        // Download image
+        // TODO - Add download button
+        let a = document.createElement('a');
+        a.href = img;
+        a.download = 'chart.jpg';
+        a.click();
+    });
 }
 
 function add2Term(result, append = false) {
