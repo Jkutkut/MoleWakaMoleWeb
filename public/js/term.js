@@ -64,17 +64,17 @@ function executeCommand(command) {
 }
 
 function addCmd2Term(command) {
-    let container = add2Term(`<cmd>$></cmd> ${command}`);
-    container.classList.add("collapsable_btn");
-    container.addEventListener("click", () => {
-        let next = container.nextElementSibling;
-        next.classList.toggle("collapsable"); // Error: function does not exists
-    });
-
+    const container = add2Term(`<cmd>$></cmd> ${command}`);
 }
 
 function addResult2Term(result) {
-    let res = add2Term(result);
+    const btn = document.createElement('term_btn');
+    add2Term(btn);
+    const res = add2Term(result);
+    btn.innerHTML = 'Collapse / Expand';
+    btn.addEventListener("click", () => {
+        res.classList.toggle("collapsable");
+    });
     return res;
 }
 
@@ -82,7 +82,7 @@ function addChart2term(data) {
     const canvas = document.createElement('canvas');
     const pre = addResult2Term(canvas);
     pre.classList.add('chart');
-    const saveBtn = document.createElement('save_btn');
+    const saveBtn = document.createElement('term_btn');
     saveBtn.innerHTML = 'Save as image';
     pre.appendChild(saveBtn);
     const ctx = canvas.getContext('2d');
