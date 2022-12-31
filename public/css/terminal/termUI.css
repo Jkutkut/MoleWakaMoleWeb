@@ -2,6 +2,8 @@ terminal {
     height: auto;
 }
 
+/* Input */
+
 textarea, textarea:focus {
     background: inherit;
     border: inherit;
@@ -26,21 +28,47 @@ term-control > pre {
     gap: 0.5rem;
 }
 
-.collapsable_btn:hover {
-    /* font-size: calc(100% + 10%); */
-    font-weight: bold;
+term-control > pre:first-child {
+    border: 1px solid #00000000;
+    border-radius: 0.2rem;
 }
 
-.collapsable_btn + pre, .collapsable_btn:hover + pre {
-    transition: 0.085s;
+term-control > pre:first-child:hover {
+    border-color: var(--c-grey);
 }
 
-.collapsable_btn:hover + pre {
-    filter: grayscale(80%) opacity(20%);
-    transform: scaleY(0);
-    height: 0px;
+term-control > pre:first-child > * {
+    border: none;
 }
+
+/* Output */
+term-result > pre > cmd {
+    margin-left: 1px;
+}
+
+/* collapsable blocks */
 
 .collapsable {
     display: none;
+}
+
+/* btn */
+term_btn {
+    --margin: 0.5rem;
+    margin: var(--margin);
+    padding: 0.5rem;
+    color: var(--font-color);
+    border-radius: 0.2rem;
+    border: 1px solid #00000000;
+
+    /* Center horizontally */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+term_btn:hover {
+    font-weight: bold;
+    border-color: var(--c-grey);
 }

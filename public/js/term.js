@@ -18,16 +18,6 @@ window.onload = () =>  {
         inputTerm.focus();
     });
 
-    // When window is clicked, the inputTerm is focused
-    // document.getElementsByTagName('terminal')[0]
-    //         .addEventListener('click', () => {
-    //     inputTerm.focus();
-    // });
-
-    window.addEventListener('click', () => {
-        inputTerm.focus();
-    });
-
     inputTerm.addEventListener('keydown', (e) => {
         if (e.key == "Tab")
             handleTab(e);
@@ -64,31 +54,32 @@ function executeCommand(command) {
 }
 
 function addCmd2Term(command) {
-    let container = add2Term(`<cmd>$></cmd> ${command}`);
-    container.classList.add("collapsable_btn");
-    container.addEventListener("click", () => {
-        let next = container.nextElementSibling;
-        next.classList.toggle("collapsable"); // Error: function does not exists
-    });
-
+    const container = add2Term(`<cmd>$></cmd> ${command}`);
 }
 
-function addResult2Term(result, append = false) {
-    let res = add2Term(result, append);
+function addResult2Term(result) {
+    const btn = document.createElement('term_btn'); // TODO: only add it if result should be collapsable
+    add2Term(btn);
+    const res = add2Term(result);
+    btn.innerHTML = 'Collapse / Expand';
+    btn.addEventListener("click", () => {
+        res.classList.toggle("collapsable");
+    });
     return res;
 }
 
 function addChart2term(data) {
-    let canvas = document.createElement('canvas');
-    let pre = addResult2Term(canvas, true);
+    const canvas = document.createElement('canvas');
+    const pre = addResult2Term(canvas);
     pre.classList.add('chart');
-    let ctx = canvas.getContext('2d');
-    let chart = new Chart(ctx, data);
+    const saveBtn = document.createElement('term_btn');
+    saveBtn.innerHTML = 'Save as image';
+    pre.appendChild(saveBtn);
+    const ctx = canvas.getContext('2d');
+    const chart = new Chart(ctx, data);
 
-    canvas.addEventListener('click', () => {
+    saveBtn.addEventListener('click', () => {
         let img = chart.toBase64Image('image/jpeg', 1);
-        // Download image
-        // TODO - Add download button
         let a = document.createElement('a');
         a.href = img;
         a.download = 'chart.jpg';
@@ -96,12 +87,12 @@ function addChart2term(data) {
     });
 }
 
-function add2Term(result, append = false) {
+function add2Term(result) {
     let res = document.createElement('pre');
-    if (append)
-        res.appendChild(result);
-    else
+    if (typeof result === 'string')
         res.innerHTML = result;
+    else
+        res.appendChild(result);
     resultTerm.appendChild(res);
     window.scrollTo(0, document.body.scrollHeight);
     return res;
