@@ -56,6 +56,7 @@ class DateUtils {
 
     // Whitenova
     static whitenovaPeriod(offset = 0) {
+        console.log(offset)
         const REF = DateUtils.fromUTC("2022-12-30T09:00:00.000Z");
         const PERIOD = 14;
         const now = DateUtils.addDays(DateUtils.now(), - PERIOD * offset);
@@ -63,9 +64,14 @@ class DateUtils {
         const periods = Math.floor(time_between / (PERIOD * 24 * 60 * 60 * 1000));
         const start = DateUtils.addDays(REF, periods * PERIOD);
         const end = DateUtils.addDays(start, PERIOD);
+
+        const days = [];
+        for (let i = 0; i < PERIOD; i++)
+            days.push(DateUtils.formatLocal(DateUtils.addDays(start, i), "dd-MM"));
         return {
             start: start,
             end: end,
+            days: days
         };
     }
 }
