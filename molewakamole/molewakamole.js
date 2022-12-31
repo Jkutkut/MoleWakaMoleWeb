@@ -1,4 +1,5 @@
 const API42 = require('./api42');
+const DateUtils = require('./dateutils');
 
 class Molewakamole {
     constructor(client, secret) {
@@ -43,11 +44,14 @@ class Molewakamole {
         let options = req.body.options;
         console.log(options);
 
-        // const period = {start: "2022-12-16T00:00:00.000Z", end: "2022-12-30T10:00:00.000Z"};
-        const period = {start: "2022-12-28T00:00:00.000Z", end: "2022-12-30T23:59:00.000Z"};
+        const period = DateUtils.whitenovaPeriod(options.period);
+        const periodStr = {
+            start: DateUtils.format(period.start),
+            end: DateUtils.format(period.end)
+        };
         const timeRange = {
-            start: `range[begin_at]=${period.start},${period.end}`,
-            end: `range[end_at]=${period.start},${period.end}`,
+            start: `range[begin_at]=${periodStr.start},${periodStr.end}`,
+            end: `range[end_at]=${periodStr.start},${periodStr.end}`,
         }
         const sort = "sort=begin_at";
 
@@ -56,45 +60,71 @@ class Molewakamole {
                 `/v2/users/${options.login}/locations`,
                 [timeRange.start, sort],
                 true
-            ).then(l => {
-                console.log('locs: ', l);
-                return l;
-            }),
+            ),
             await this.api.get(
                 `/v2/users/${options.login}/locations`,
                 [timeRange.end, sort],
                 true
             )
         );
+
+        if (locations.length > 0) {
+            const begin_date = DateUtils.fromUTC(locations[0].begin_at);
+
+            if (begin_date < period.start) // If logged in before period
+                locations[0].begin_at = periodStr.start;
+            let lastEnd;
+            if (locations[locations.length - 1].end_at == null) // If still logged in
+                lastEnd = DateUtils.now();
+            else
+                lastEnd = DateUtils.fromUTC(locations[locations.length - 1].end_at);
+            if (lastEnd > period.end) // If logged out after period
+                locations[locations.length - 1].end_at = periodStr.end;
+        }
         console.log(locations);
 
         // TODO get data from API
+        //   - Get corrections
+        //   - Get events
         // TODO format data
+        // TODO implement true whitenova
+
+        // TODO refactor to parser
+        let periodHours = [];
+        // TODO
+        // TODO refactor to parser
 
         let jsonResponse = {
-            xdata: [
-                '16-12', '17-12', '18-12', '19-12', '20-12', '21-12', '22-12', '23-12',
-                '24-12', '25-12', '26-12', '27-12', '28-12', '29-12', '30-12'
-            ],
+            // xdata: [
+            //     '16-12', '17-12', '18-12', '19-12', '20-12', '21-12', '22-12', '23-12',
+            //     '24-12', '25-12', '26-12', '27-12', '28-12', '29-12', '30-12'
+            // ],
+            xdata: period.days,
             fts: [
                 {
                     name: 'Hours of activity',
-                    data: [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 11, 0],
+                    // data: [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 11, 0],
+                    data: periodHours,
                     // color: termColors.blue // TODO
                     color: "#18b6ff"
                 },
                 {
-                    name: 'Corrections',
-                    data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
-                    // color: termColors.orange
+                    name: 'Hours of activity (test)',
+                    data: [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 11, 0],
                     color: "#ff9528"
                 },
-                {
-                    name: 'Events',
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-                    // color: termColors.green
-                    color: '#1beb9e'
-                }
+                // {
+                //     name: 'Corrections',
+                //     data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
+                //     // color: termColors.orange
+                //     color: "#ff9528"
+                // },
+                // {
+                //     name: 'Events',
+                //     data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                //     // color: termColors.green
+                //     color: '#1beb9e'
+                // }
             ]
         };
 
@@ -219,8 +249,6 @@ const parser = {
 }
 
 function jsonJoinNoDuplicates(arr1, arr2) {
-    console.log("arr1", arr1)
-    console.log("arr2", arr2)
     const arr = [...arr1];
     for (let i = 0; i < arr2.length; i++) {
         let found = false;

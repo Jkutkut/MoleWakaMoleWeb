@@ -38,7 +38,6 @@ window.onload = () =>  {
 
     inputTerm.focus();
 
-    inputTerm.value = "whitenova jre-gonz";
     // TODO long input lines
 };
 
