@@ -47,8 +47,12 @@ function executeCommand(command) {
     addCmd2History(command);
     addCmd2Term(command);
     handleCmd(command).then((result) => {
-        if (result.length > 0)
-            addResult2Term(result);
+        if (typeof result === 'string') {
+            if (result.length > 0)
+                addResult2Term(result);
+        }
+        else
+            addChart2term(result);
     });
     removeHints();
 }

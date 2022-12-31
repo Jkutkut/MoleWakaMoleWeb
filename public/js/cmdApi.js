@@ -26,9 +26,9 @@ async function makeRequestAPI(request) {
 
 const apiResponseHandler = {
     def: (cmdArr, cmd, response) => response.text(),
-    whitenova: (cmdArr, cmd, response) => {
-        // TODO
-        return "Not implemented yet: " + JSON.stringify(response.json());
+    whitenova: async (cmdArr, cmd, response) => {
+        const {xdata, fts} = await response.json();
+        return createChart(xdata, fts);
     }
 };
 
@@ -126,6 +126,7 @@ const apiCmdsHandler = {
         return {
             cmd: cmd['cmd'],
             options: {
+                login: cmdArr[cmdArr.length - 1],
                 period: period,
                 full: full
             }

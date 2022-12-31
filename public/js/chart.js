@@ -94,3 +94,5 @@ function createChart(xdata, fts) {
         ],
     };
 }
+
+window.createChart = createChart;
