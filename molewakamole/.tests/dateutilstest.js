@@ -23,3 +23,8 @@ console.log(DateUtils.format(dateLocal));
 
 console.log("---------------------");
 console.log(DateUtils.formatLocal(n, "dd-MM"))
+
+console.log("---------------------");
+const p = DateUtils.whitenovaPeriod(1);
+console.log(DateUtils.formatLocal(p.start))
+console.log(DateUtils.formatLocal(p.end))

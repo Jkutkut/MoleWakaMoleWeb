@@ -46,6 +46,28 @@ class DateUtils {
         result.setMilliseconds(parseInt(dateStr.substr(format.indexOf('millis'), 3)));
         return result;
     }
+
+    // Operations
+    static addDays(d, days) {
+        const result = new Date(d.getTime());
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    // Whitenova
+    static whitenovaPeriod(offset = 0) {
+        const REF = DateUtils.fromUTC("2022-12-30T09:00:00.000Z");
+        const PERIOD = 14;
+        const now = DateUtils.addDays(DateUtils.now(), - PERIOD * offset);
+        const time_between = now - REF;
+        const periods = Math.floor(time_between / (PERIOD * 24 * 60 * 60 * 1000));
+        const start = DateUtils.addDays(REF, periods * PERIOD);
+        const end = DateUtils.addDays(start, PERIOD);
+        return {
+            start: start,
+            end: end,
+        };
+    }
 }
 
 module.exports = DateUtils;
