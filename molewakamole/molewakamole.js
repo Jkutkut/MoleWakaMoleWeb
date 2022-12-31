@@ -6,6 +6,10 @@ class Molewakamole {
     }
 
     get(req, res) {
+        if (this.specialRequest(req)) {
+            this[req.body.cmd](req, res);
+            return;
+        }
         this.api.get(
             req.body.endpoint,
             req.body.filters,
@@ -26,6 +30,50 @@ class Molewakamole {
             console.log(err);
             res.sendStatus(503);
         });
+    }
+
+    // Special requests
+    specialRequest(req) {
+        const cmd = req.body.cmd;
+        const special = ['whitenova'];
+        return special.includes(cmd);
+    }
+
+    whitenova(req, res) {
+        let options = req.body.options;
+        console.log(options);
+
+        // TODO get data from API
+
+        let jsonResponse = {
+            xdata: [
+                '16-12', '17-12', '18-12', '19-12', '20-12', '21-12', '22-12', '23-12',
+                '24-12', '25-12', '26-12', '27-12', '28-12', '29-12', '30-12'
+            ],
+            fts: [
+                {
+                    name: 'Hours of activity',
+                    data: [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 11, 0],
+                    // color: termColors.blue // TODO
+                    color: "#18b6ff"
+                },
+                {
+                    name: 'Corrections',
+                    data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
+                    // color: termColors.orange
+                    color: "#ff9528"
+                },
+                {
+                    name: 'Events',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                    // color: termColors.green
+                    color: '#1beb9e'
+                }
+            ]
+        };
+
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(jsonResponse));
     }
 
     formatData(request, data) {
