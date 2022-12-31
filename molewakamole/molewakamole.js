@@ -39,11 +39,37 @@ class Molewakamole {
         return special.includes(cmd);
     }
 
-    whitenova(req, res) {
+    async whitenova(req, res) {
         let options = req.body.options;
         console.log(options);
 
+        // const period = {start: "2022-12-16T00:00:00.000Z", end: "2022-12-30T10:00:00.000Z"};
+        const period = {start: "2022-12-28T00:00:00.000Z", end: "2022-12-30T23:59:00.000Z"};
+        const timeRange = {
+            start: `range[begin_at]=${period.start},${period.end}`,
+            end: `range[end_at]=${period.start},${period.end}`,
+        }
+        const sort = "sort=begin_at";
+
+        const locations = jsonJoinNoDuplicates(
+            await this.api.get(
+                `/v2/users/${options.login}/locations`,
+                [timeRange.start, sort],
+                true
+            ).then(l => {
+                console.log('locs: ', l);
+                return l;
+            }),
+            await this.api.get(
+                `/v2/users/${options.login}/locations`,
+                [timeRange.end, sort],
+                true
+            )
+        );
+        console.log(locations);
+
         // TODO get data from API
+        // TODO format data
 
         let jsonResponse = {
             xdata: [
@@ -190,6 +216,24 @@ const parser = {
         return data;
     },
     'search': (data) => data
+}
+
+function jsonJoinNoDuplicates(arr1, arr2) {
+    console.log("arr1", arr1)
+    console.log("arr2", arr2)
+    const arr = [...arr1];
+    for (let i = 0; i < arr2.length; i++) {
+        let found = false;
+        for (let j = 0; j < arr.length; j++) {
+            if (arr2[i] == arr[j]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            arr.push(arr2[i]);
+    }
+    return arr;
 }
 
 module.exports = Molewakamole;
