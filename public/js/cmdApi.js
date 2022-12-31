@@ -26,7 +26,10 @@ async function makeRequestAPI(request) {
 
 const apiResponseHandler = {
     def: (cmdArr, cmd, response) => response.text(),
-    // TODO Whitenova
+    whitenova: (cmdArr, cmd, response) => {
+        // TODO
+        return "Not implemented yet: " + response.text();
+    }
 };
 
 const apiCmdsHandler = {
@@ -109,4 +112,12 @@ const apiCmdsHandler = {
             pageSize: pageSize
         }
     },
+    whitenova: (cmdArr, cmd) => {
+        // TODO
+        return {
+            cmd: cmd['cmd'],
+            endpoint: [],
+            filters: []
+        }
+    }
 };

@@ -159,6 +159,35 @@
                 "type": "string"
             },
             "api": true
+        },
+        {
+            "cmd": "whitenova",
+            "desc": "Shows the whitenova of the given user login in a single period.",
+            "alias": ["whitenova", "wnova"],
+            "flags": [
+                {
+                    "flag": "-p",
+                    "desc": "Period to show.",
+                    "value": {
+                        "name": "PERIOD",
+                        "type": "number"
+                    },
+                    "optional": true,
+                    "repeatable": false
+                },
+                {
+                    "flag": "--full",
+                    "desc": "Also calculates the corrections done and the events.",
+                    "value": null,
+                    "optional": true,
+                    "repeatable": false
+                }
+            ],
+            "value": {
+                "name": "LOGIN",
+                "type": "string"
+            },
+            "api": true
         }
     ],
     "lib": {
