@@ -28,7 +28,7 @@ const apiResponseHandler = {
     def: (cmdArr, cmd, response) => response.text(),
     whitenova: (cmdArr, cmd, response) => {
         // TODO
-        return "Not implemented yet: " + response.text();
+        return "Not implemented yet: " + JSON.stringify(response.json());
     }
 };
 
@@ -113,11 +113,22 @@ const apiCmdsHandler = {
         }
     },
     whitenova: (cmdArr, cmd) => {
-        // TODO
+        let period = 0;
+        let full = false;
+        let idx = 1;
+        while (idx < cmdArr.length - 1) {
+            if (cmdArr[idx] == '-p')
+                period = parseInt(cmdArr[++idx]);
+            else if (cmdArr[idx] == '--full')
+                full = true;
+            idx++;
+        }
         return {
             cmd: cmd['cmd'],
-            endpoint: [],
-            filters: []
+            options: {
+                period: period,
+                full: full
+            }
         }
     }
 };
