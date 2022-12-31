@@ -18,16 +18,6 @@ window.onload = () =>  {
         inputTerm.focus();
     });
 
-    // When window is clicked, the inputTerm is focused
-    // document.getElementsByTagName('terminal')[0]
-    //         .addEventListener('click', () => {
-    //     inputTerm.focus();
-    // });
-
-    window.addEventListener('click', () => {
-        inputTerm.focus();
-    });
-
     inputTerm.addEventListener('keydown', (e) => {
         if (e.key == "Tab")
             handleTab(e);
@@ -68,7 +58,7 @@ function addCmd2Term(command) {
 }
 
 function addResult2Term(result) {
-    const btn = document.createElement('term_btn');
+    const btn = document.createElement('term_btn'); // TODO: only add it if result should be collapsable
     add2Term(btn);
     const res = add2Term(result);
     btn.innerHTML = 'Collapse / Expand';
