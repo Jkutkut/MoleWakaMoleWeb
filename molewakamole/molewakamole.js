@@ -65,14 +65,15 @@ class Molewakamole {
                 `/v2/users/${options.login}/locations`,
                 [timeRange.end, sort],
                 true
-            )
+            ),
+            (l1, l2) => l1.id == l2.id
         );
 
         if (locations.length > 0) {
             const begin_date = DateUtils.fromUTC(locations[0].begin_at);
-
             if (begin_date < period.start) // If logged in before period
                 locations[0].begin_at = periodStr.start;
+            
             let lastEnd;
             if (locations[locations.length - 1].end_at == null) // If still logged in
                 lastEnd = DateUtils.now();
@@ -91,8 +92,34 @@ class Molewakamole {
 
         // TODO refactor to parser
         let periodHours = [];
+        for (let i = 0; i < period.days.length; i++)
+            periodHours[i] = 0;
+        let l;
+        for (let i = 0; i < locations.length; i++) {
+            l = {
+                start: DateUtils.fromUTC(locations[i].begin_at),
+                end: DateUtils.fromUTC(locations[i].end_at)
+            };
+            l.start_day = l.start.getDate();
+            l.end_day = l.end.getDate();
+
+            // console.log("------------------")
+            // console.log(DateUtils.formatLocal(l.start, 'dd-MM-yyyy hh:mm:ss'))
+            // console.log(DateUtils.formatLocal(l.end, 'dd-MM-yyyy hh:mm:ss'))
+            // console.log("------------------")
+
+            if (l.start_day == l.end_day) {
+                periodHours[l.start_day - period.start.getDate()] += (l.end - l.start) / 3600000;
+            }
+            else {
+                // TODO
+            }
+            // TODO full report
+        }
         // TODO
         // TODO refactor to parser
+
+        console.log(periodHours);
 
         let jsonResponse = {
             // xdata: [
@@ -248,12 +275,12 @@ const parser = {
     'search': (data) => data
 }
 
-function jsonJoinNoDuplicates(arr1, arr2) {
+function jsonJoinNoDuplicates(arr1, arr2, eqFt) {
     const arr = [...arr1];
     for (let i = 0; i < arr2.length; i++) {
         let found = false;
         for (let j = 0; j < arr.length; j++) {
-            if (arr2[i] == arr[j]) {
+            if (eqFt(arr[j], arr2[i])) {
                 found = true;
                 break;
             }
