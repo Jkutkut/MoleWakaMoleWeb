@@ -1,5 +1,6 @@
 const API42 = require('./api42');
 const DateUtils = require('./dateutils');
+const hb = require('express-handlebars').create();
 
 class Molewakamole {
     constructor(client, secret) {
@@ -155,8 +156,21 @@ class Molewakamole {
             ]
         };
 
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(jsonResponse));
+        hb.render(
+            "./views/api/whitenovaLocation.hbs",
+            {data: [
+                {
+                    begin_at: "08:42",
+                    end_at: "17:42",
+                    time: 9,
+                    host: "c2r2s2",
+                    host_name: "Millenium Falcon"
+                }
+            ]}
+        ).then(html => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify([html, jsonResponse]));
+        });
     }
 
     formatData(request, data) {
