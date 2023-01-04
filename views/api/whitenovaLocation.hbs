@@ -3,5 +3,6 @@
   - End: {{ info.end_at }}
 
 {{#each data as |l|}}
-{{ l.begin_at }} -- {{ l.end_at }} -> {{ l.time }} {{ l.host }} {{ l.host_name }}
+{{ l.begin_at }} -- {{ l.end_at }} -> {{ l.duration }} {{ l.host }} {{ l.host_name }}
 {{/each}}
+{{!-- TODO add format --}}

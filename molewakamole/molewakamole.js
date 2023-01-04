@@ -94,10 +94,11 @@ class Molewakamole {
         // TODO implement true whitenova
 
         // TODO refactor to parser
-        let periodHours = [];
+        const periodHours = [];
         for (let i = 0; i < period.days.length; i++)
             periodHours[i] = 0;
-        let l;
+        const log = [];
+        let l, duration;
         for (let i = 0; i < locations.length; i++) {
             l = {
                 start: DateUtils.fromUTC(locations[i].begin_at),
@@ -105,6 +106,15 @@ class Molewakamole {
             };
             l.start_day = l.start.getDate();
             l.end_day = l.end.getDate();
+            l.duration = (l.end - l.start) / 3600000;
+
+            log.push({
+                begin_at: DateUtils.formatLocal(l.start, 'hh:mm dd-MM-yyyy'),
+                end_at: DateUtils.formatLocal(l.end, 'hh:mm dd-MM-yyyy'),
+                duration: DateUtils.formatMillis(l.end - l.start, "hh:mm"),
+                host: locations[i].host,
+                host_name: "TODO"
+            });
 
             // console.log("------------------")
             // console.log(DateUtils.formatLocal(l.start, 'dd-MM-yyyy hh:mm:ss'))
@@ -112,7 +122,7 @@ class Molewakamole {
             // console.log("------------------")
 
             if (l.start_day == l.end_day) {
-                periodHours[l.start_day - period.start.getDate()] += (l.end - l.start) / 3600000;
+                periodHours[l.start_day - period.start.getDate()] += l.duration;
             }
             else {
                 // TODO
@@ -161,15 +171,8 @@ class Molewakamole {
                     start_at: DateUtils.formatLocal(period.start, 'hh:mm dd-MM-yyyy'),
                     end_at: DateUtils.formatLocal(period.end, 'hh:mm dd-MM-yyyy')
                 },
-                data: [ // TODO implement
-                {
-                    begin_at: "08:42",
-                    end_at: "17:42",
-                    time: 9,
-                    host: "c2r2s2",
-                    host_name: "Millenium Falcon"
-                }
-            ]}
+                data: log
+            }
         ).then(html => {
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify([html, jsonResponse]));

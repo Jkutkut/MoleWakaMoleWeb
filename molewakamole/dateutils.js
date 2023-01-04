@@ -5,6 +5,10 @@ class DateUtils {
         return d;
     }
 
+    static fromMillis(millis) {
+        return new Date(millis);
+    }
+
     static format(d, format = 'yyyy-MM-ddThh:mm:ss.millisZ') {
         let result = format;
         result = result.replace('yyyy', d.getFullYear().toString().padStart(4, '0'));
@@ -21,6 +25,13 @@ class DateUtils {
         const dateutc = new Date(d.getTime());
         dateutc.setMinutes(dateutc.getMinutes() - dateutc.getTimezoneOffset());
         return DateUtils.format(dateutc, format);
+    }
+
+    static formatMillis(ms) {
+        const _24HOURS = 8.64e7;  // 24*60*60*1000
+        const mmss = DateUtils.format(DateUtils.fromMillis(ms % _24HOURS), "mm:ss");
+        let hh = Math.floor(ms / _24HOURS);
+        return hh + ":" + mmss;
     }
 
     static fromLocal(dateStr, format = 'yyyy-MM-ddThh:mm:ss.millisZ') {
