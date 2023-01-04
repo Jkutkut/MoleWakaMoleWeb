@@ -89,6 +89,8 @@ class Molewakamole {
         //   - Get corrections
         //   - Get events
         // TODO format data
+        // TODO use CSS colors
+        // TODO show if whitenova reached
         // TODO implement true whitenova
 
         // TODO refactor to parser
@@ -123,17 +125,11 @@ class Molewakamole {
         console.log(periodHours);
 
         let jsonResponse = {
-            // xdata: [
-            //     '16-12', '17-12', '18-12', '19-12', '20-12', '21-12', '22-12', '23-12',
-            //     '24-12', '25-12', '26-12', '27-12', '28-12', '29-12', '30-12'
-            // ],
             xdata: period.days,
             fts: [
                 {
                     name: 'Hours of activity',
-                    // data: [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 11, 0],
                     data: periodHours,
-                    // color: termColors.blue // TODO
                     color: "#18b6ff"
                 },
                 {
@@ -158,7 +154,14 @@ class Molewakamole {
 
         hb.render(
             "./views/api/whitenovaLocation.hbs",
-            {data: [
+            {
+                info: {
+                    login: options.login,
+                    timezone: "Madrid",
+                    start_at: DateUtils.formatLocal(period.start, 'hh:mm dd-MM-yyyy'),
+                    end_at: DateUtils.formatLocal(period.end, 'hh:mm dd-MM-yyyy')
+                },
+                data: [ // TODO implement
                 {
                     begin_at: "08:42",
                     end_at: "17:42",

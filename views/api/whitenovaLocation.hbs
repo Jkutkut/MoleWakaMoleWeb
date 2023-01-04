@@ -1,6 +1,7 @@
-jre-gonz's 15 days period: (Time zone: Madrid)
-  - Start: 09:00 30-12
-  - End: 09:00 13-01
+{{ info.login }}'s 15 days period: (Time zone: {{ info.timezone }})
+  - Start: {{ info.start_at }}
+  - End: {{ info.end_at }}
+
 {{#each data as |l|}}
 {{ l.begin_at }} -- {{ l.end_at }} -> {{ l.time }} {{ l.host }} {{ l.host_name }}
 {{/each}}
