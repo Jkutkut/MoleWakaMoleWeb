@@ -27,8 +27,14 @@ async function makeRequestAPI(request) {
 const apiResponseHandler = {
     def: (cmdArr, cmd, response) => response.text(),
     whitenova: async (cmdArr, cmd, response) => {
-        const {xdata, fts} = await response.json();
-        return createChart(xdata, fts);
+        const blocks = [];
+        for (let block of await response.json()) {
+            if (typeof block == 'string')
+                blocks.push(block);
+            else if (typeof block == 'object')
+                blocks.push(createChart(block['xdata'], block['fts']));
+        }
+        return blocks;
     }
 };
 
