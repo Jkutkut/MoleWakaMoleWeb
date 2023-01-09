@@ -52,21 +52,21 @@ class Molewakamole {
         console.log(options);
 
         const period = DateUtils.whitenovaPeriod(options.period);
-        const timeRange = {
-            start: `range[begin_at]=${period.startStr},${period.endStr}`,
-            end: `range[end_at]=${period.startStr},${period.endStr}`,
-        }
-        const sort = "sort=begin_at";
+        const apiOptions = {
+            beginRange: `range[begin_at]=${period.startStr},${period.endStr}`,
+            endRange: `range[end_at]=${period.startStr},${period.endStr}`,
+            sortFilter: "sort=begin_at",
+        };
 
         const locations = jsonJoinNoDuplicates(
             await this.api.get(
                 `/v2/users/${options.login}/locations`,
-                [timeRange.end, sort],
+                [apiOptions.endRange, apiOptions.sortFilter],
                 true
             ),
             await this.api.get(
                 `/v2/users/${options.login}/locations`,
-                [timeRange.start, sort],
+                [apiOptions.beginRange, apiOptions.sortFilter],
                 true
             ),
             (l1, l2) => l1.id == l2.id
@@ -75,11 +75,13 @@ class Molewakamole {
         // TODO get data from API
         //   - Get corrections
         //   - Get events
+        const corrections = [];
+        const events = [];
 
         const {
             whitenovaLocationData,
             graph
-        } = parser.whitenova(options, period, locations, [], []);
+        } = parser.whitenova(options, period, locations, corrections, events);
 
         hb.render(
             "./views/api/whitenovaLocation.hbs",
