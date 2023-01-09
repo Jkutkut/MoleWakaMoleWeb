@@ -1,8 +1,14 @@
 const API42 = require('./api42');
 const DateUtils = require('./dateutils');
 const hb = require('express-handlebars').create();
+const {
+    parseFileSync
+} = require('css-variables-parser');
 
 class Molewakamole {
+
+    static CSS = parseFileSync('./public/css/term.css');
+
     constructor(client, secret) {
         this.api = new API42(client, secret);
     }
@@ -88,7 +94,6 @@ class Molewakamole {
         //   - Get corrections
         //   - Get events
         // TODO format data
-        // TODO use CSS colors
         // TODO show if whitenova reached
         // TODO implement true whitenova
 
@@ -138,25 +143,18 @@ class Molewakamole {
                 {
                     name: 'Hours of activity',
                     data: periodHours,
-                    color: "#18b6ff"
+                    color: Molewakamole.CSS['c-blue']
                 },
                 {
-                    name: 'Hours of activity (test)',
-                    data: [7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 11, 0],
-                    color: "#ff9528"
+                    name: 'Corrections',
+                    data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
+                    color: Molewakamole.CSS['c-orange']
                 },
-                // {
-                //     name: 'Corrections',
-                //     data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
-                //     // color: termColors.orange
-                //     color: "#ff9528"
-                // },
-                // {
-                //     name: 'Events',
-                //     data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-                //     // color: termColors.green
-                //     color: '#1beb9e'
-                // }
+                {
+                    name: 'Events',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                    color: Molewakamole.CSS['c-green']
+                }
             ]
         };
 
