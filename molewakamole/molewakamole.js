@@ -59,12 +59,12 @@ class Molewakamole {
         const locations = jsonJoinNoDuplicates(
             await this.api.get(
                 `/v2/users/${options.login}/locations`,
-                [timeRange.start, sort],
+                [timeRange.end, sort],
                 true
             ),
             await this.api.get(
                 `/v2/users/${options.login}/locations`,
-                [timeRange.end, sort],
+                [timeRange.start, sort],
                 true
             ),
             (l1, l2) => l1.id == l2.id
@@ -83,7 +83,7 @@ class Molewakamole {
             if (lastEnd > period.end) // If logged out after period
                 locations[locations.length - 1].end_at = periodStr.end;
         }
-        console.log(locations);
+        // console.log(locations);
 
         // TODO get data from API
         //   - Get corrections
@@ -98,7 +98,7 @@ class Molewakamole {
         for (let i = 0; i < period.days.length; i++)
             periodHours[i] = 0;
         const log = [];
-        let l, duration;
+        let l;
         for (let i = 0; i < locations.length; i++) {
             l = {
                 start: DateUtils.fromUTC(locations[i].begin_at),
@@ -109,9 +109,9 @@ class Molewakamole {
             l.duration = (l.end - l.start) / 3600000;
 
             log.push({
-                begin_at: DateUtils.formatLocal(l.start, 'hh:mm dd-MM-yyyy'),
-                end_at: DateUtils.formatLocal(l.end, 'hh:mm dd-MM-yyyy'),
-                duration: DateUtils.formatMillis(l.end - l.start, "hh:mm"),
+                begin_at: DateUtils.formatLocal(l.start, 'hh:mm:ss dd-MM-yyyy'),
+                end_at: DateUtils.formatLocal(l.end, 'hh:mm:ss dd-MM-yyyy'),
+                duration: DateUtils.formatMillis(l.end - l.start),
                 host: locations[i].host,
                 host_name: "TODO"
             });

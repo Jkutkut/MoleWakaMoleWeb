@@ -28,9 +28,10 @@ class DateUtils {
     }
 
     static formatMillis(ms) {
-        const _24HOURS = 8.64e7;  // 24*60*60*1000
+        const _24HOURS = 3600000; // 60 * 60 * 1000
+        const hh = Math.floor(ms / _24HOURS);
         const mmss = DateUtils.format(DateUtils.fromMillis(ms % _24HOURS), "mm:ss");
-        let hh = Math.floor(ms / _24HOURS);
+        console.log(hh, mmss, ms, ms / _24HOURS);
         return hh + ":" + mmss;
     }
 
