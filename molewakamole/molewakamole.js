@@ -97,7 +97,7 @@ class Molewakamole {
         for (let i = 0; i < period.days.length; i++)
             periodHours[i] = 0;
         const log = [];
-        let l;
+        let l, totalTime = 0;
         for (let i = 0; i < locations.length; i++) {
             l = {
                 start: DateUtils.fromUTC(locations[i].begin_at),
@@ -121,16 +121,16 @@ class Molewakamole {
 
             if (l.start_day == l.end_day) {
                 periodHours[l.start_day - period.start.getDate()] += l.duration;
+                totalTime += l.end - l.start;
             }
             else {
                 // TODO
+                totalTime += 0;
             }
             // TODO full report
         }
         // TODO
         // TODO refactor to parser
-
-        console.log(periodHours);
 
         let jsonResponse = {
             xdata: period.days,
@@ -169,7 +169,11 @@ class Molewakamole {
                     start_at: DateUtils.formatLocal(period.start, 'hh:mm dd-MM-yyyy'),
                     end_at: DateUtils.formatLocal(period.end, 'hh:mm dd-MM-yyyy')
                 },
-                data: log
+                locations: log,
+                analysis: {
+                    totalTime: DateUtils.formatMillis(totalTime),
+                    whitenovaTime: (totalTime >= 43200000) ? "Whitenova reached!" : "" // 12 * 60 * 60 * 1000
+                }
             }
         ).then(html => {
             res.setHeader('Content-Type', 'application/json');

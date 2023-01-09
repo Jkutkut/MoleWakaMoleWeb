@@ -2,6 +2,8 @@
   - Start: <string>{{ info.start_at }}</string>
   - End: <string>{{ info.end_at }}</string>
 
-{{#each data as |l|}}
+{{#each locations as |l|}}
 <string>{{ l.begin_at }}</string> -- <string>{{ l.end_at }}</string> -> <number>{{ l.duration }}</number> {{ l.host_name }}
 {{/each}}
+
+Total: {{analysis.totalTime}} {{#if analysis.whitenovaTime}}(<obj>{{analysis.whitenovaTime}}</obj>){{/if}}
