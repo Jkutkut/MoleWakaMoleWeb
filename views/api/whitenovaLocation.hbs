@@ -1,8 +1,7 @@
-{{ info.login }}'s 15 days period: (Time zone: {{ info.timezone }})
-  - Start: {{ info.start_at }}
-  - End: {{ info.end_at }}
+{{ info.login }}'s 15 days period: (Time zone: <define>{{ info.timezone }}</define>)
+  - Start: <string>{{ info.start_at }}</string>
+  - End: <string>{{ info.end_at }}</string>
 
 {{#each data as |l|}}
-{{ l.begin_at }} -- {{ l.end_at }} -> {{ l.duration }} {{ l.host }} {{ l.host_name }}
+<string>{{ l.begin_at }}</string> -- <string>{{ l.end_at }}</string> -> <number>{{ l.duration }}</number> {{ l.host_name }}
 {{/each}}
-{{!-- TODO add format --}}

@@ -83,7 +83,6 @@ class Molewakamole {
             if (lastEnd > period.end) // If logged out after period
                 locations[locations.length - 1].end_at = periodStr.end;
         }
-        // console.log(locations);
 
         // TODO get data from API
         //   - Get corrections
@@ -112,8 +111,7 @@ class Molewakamole {
                 begin_at: DateUtils.formatLocal(l.start, 'hh:mm:ss dd-MM-yyyy'),
                 end_at: DateUtils.formatLocal(l.end, 'hh:mm:ss dd-MM-yyyy'),
                 duration: DateUtils.formatMillis(l.end - l.start),
-                host: locations[i].host,
-                host_name: "TODO"
+                host_name: parser.host(locations[i].host)
             });
 
             // console.log("------------------")
@@ -259,7 +257,7 @@ const parser = {
         }[c];
         return (result == undefined) ? "UNKNOWN" : result;
     },
-    'host': (host, campusId) => {
+    'host': (host, campusId=22) => {
         if (campusId == 22) {
             let clusterName = {
                 'c1': 'Enterprise',

@@ -31,7 +31,6 @@ class DateUtils {
         const _24HOURS = 3600000; // 60 * 60 * 1000
         const hh = Math.floor(ms / _24HOURS);
         const mmss = DateUtils.format(DateUtils.fromMillis(ms % _24HOURS), "mm:ss");
-        console.log(hh, mmss, ms, ms / _24HOURS);
         return hh + ":" + mmss;
     }
 
