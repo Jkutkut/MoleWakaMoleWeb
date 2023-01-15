@@ -1,11 +1,23 @@
 const API42 = require('./api42');
+const DateUtils = require('./dateutils');
+const hb = require('express-handlebars').create();
+const {
+    parseFileSync
+} = require('css-variables-parser');
 
 class Molewakamole {
+
+    static CSS = parseFileSync('./public/css/term.css');
+
     constructor(client, secret) {
         this.api = new API42(client, secret);
     }
 
     get(req, res) {
+        if (this.specialRequest(req)) {
+            this[req.body.cmd](req, res);
+            return;
+        }
         this.api.get(
             req.body.endpoint,
             req.body.filters,
@@ -25,6 +37,58 @@ class Molewakamole {
         }).catch(err => {
             console.log(err);
             res.sendStatus(503);
+        });
+    }
+
+    // Special requests
+    specialRequest(req) {
+        const cmd = req.body.cmd;
+        const special = ['whitenova'];
+        return special.includes(cmd);
+    }
+
+    async whitenova(req, res) {
+        let options = req.body.options;
+        console.log(options);
+
+        const period = DateUtils.whitenovaPeriod(options.period);
+        const apiOptions = {
+            beginRange: `range[begin_at]=${period.startStr},${period.endStr}`,
+            endRange: `range[end_at]=${period.startStr},${period.endStr}`,
+            sortFilter: "sort=begin_at",
+        };
+
+        const locations = jsonJoinNoDuplicates(
+            await this.api.get(
+                `/v2/users/${options.login}/locations`,
+                [apiOptions.endRange, apiOptions.sortFilter],
+                true
+            ),
+            await this.api.get(
+                `/v2/users/${options.login}/locations`,
+                [apiOptions.beginRange, apiOptions.sortFilter],
+                true
+            ),
+            (l1, l2) => l1.id == l2.id
+        );
+
+        // TODO get data from API
+        //   - Get corrections
+        //   - Get events
+        const corrections = [];
+        const events = [];
+
+        const {
+            whitenovaLocationData,
+            graph
+        } = parser.whitenova(options, period, locations, corrections, events);
+
+        hb.render(
+            "./views/api/whitenovaLocation.hbs",
+            whitenovaLocationData
+        ).then(html => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify([html, graph]));
         });
     }
 
@@ -108,7 +172,7 @@ const parser = {
         }[c];
         return (result == undefined) ? "UNKNOWN" : result;
     },
-    'host': (host, campusId) => {
+    'host': (host, campusId=22) => {
         if (campusId == 22) {
             let clusterName = {
                 'c1': 'Enterprise',
@@ -141,7 +205,116 @@ const parser = {
             data[i] = parser.locationParser(data[i]);
         return data;
     },
-    'search': (data) => data
+    'search': (data) => data,
+    'whitenova': (options, period, locations = [], corrections = [], events = []) => {
+        // TODO implement corrections
+        // TODO implement events
+        // TODO format data
+        // TODO show if whitenova reached
+        // TODO implement true whitenova
+        if (locations.length > 0) {
+            const begin_date = DateUtils.fromUTC(locations[0].begin_at);
+            if (begin_date < period.start) // If logged in before period
+                locations[0].begin_at = period.startStr;
+            
+            let lastEnd;
+            if (locations[locations.length - 1].end_at == null) // If still logged in
+                lastEnd = DateUtils.now();
+            else
+                lastEnd = DateUtils.fromUTC(locations[locations.length - 1].end_at);
+            if (lastEnd > period.end) // If logged out after period
+                locations[locations.length - 1].end_at = period.endStr;
+        }
+
+        const periodHours = [];
+        for (let i = 0; i < period.days.length; i++)
+            periodHours[i] = 0;
+        const log = [];
+        let l, totalTime = 0;
+        for (let i = 0; i < locations.length; i++) {
+            l = {
+                start: DateUtils.fromUTC(locations[i].begin_at),
+                end: DateUtils.fromUTC(locations[i].end_at)
+            };
+            l.start_day = l.start.getDate();
+            l.end_day = l.end.getDate();
+            l.duration = (l.end - l.start) / 3600000;
+
+            log.push({
+                begin_at: DateUtils.formatLocal(l.start, 'hh:mm:ss dd-MM-yyyy'),
+                end_at: DateUtils.formatLocal(l.end, 'hh:mm:ss dd-MM-yyyy'),
+                duration: DateUtils.formatMillis(l.end - l.start),
+                host_name: parser.host(locations[i].host)
+            });
+
+            // console.log("------------------")
+            // console.log(DateUtils.formatLocal(l.start, 'dd-MM-yyyy hh:mm:ss'))
+            // console.log(DateUtils.formatLocal(l.end, 'dd-MM-yyyy hh:mm:ss'))
+            // console.log("------------------")
+
+            if (l.start_day == l.end_day) {
+                periodHours[l.start_day - period.start.getDate()] += l.duration;
+                totalTime += l.end - l.start;
+            }
+            else {
+                // TODO
+                totalTime += 0;
+            }
+            // TODO full report
+        }
+
+        return {
+            graph: {
+                xdata: period.days,
+                fts: [
+                    {
+                        name: 'Hours of activity',
+                        data: periodHours,
+                        color: Molewakamole.CSS['c-blue']
+                    },
+                    {
+                        name: 'Corrections',
+                        data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
+                        color: Molewakamole.CSS['c-orange']
+                    },
+                    {
+                        name: 'Events',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                        color: Molewakamole.CSS['c-green']
+                    }
+                ]
+            },
+            whitenovaLocationData: {
+                info: {
+                    login: options.login,
+                    timezone: "Madrid",
+                    start_at: DateUtils.formatLocal(period.start, 'hh:mm dd-MM-yyyy'),
+                    end_at: DateUtils.formatLocal(period.end, 'hh:mm dd-MM-yyyy')
+                },
+                locations: log,
+                analysis: {
+                    totalTime: DateUtils.formatMillis(totalTime),
+                    whitenovaTime: (totalTime >= 43200000) ? "Whitenova reached!" : "" // 12 * 60 * 60 * 1000
+                }
+            }
+        };
+    }
+}
+
+function jsonJoinNoDuplicates(arr1, arr2, eqFt) {
+    const arr = [...arr1];
+    for (let i = 0; i < arr2.length; i++) {
+        let found = false;
+        for (let j = 0; j < arr.length; j++) {
+            if (eqFt(arr[j], arr2[i])) {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            arr.push(arr2[i]);
+    }
+    return arr;
 }
 
 module.exports = Molewakamole;

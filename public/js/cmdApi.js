@@ -26,7 +26,16 @@ async function makeRequestAPI(request) {
 
 const apiResponseHandler = {
     def: (cmdArr, cmd, response) => response.text(),
-    // TODO Whitenova
+    whitenova: async (cmdArr, cmd, response) => {
+        const blocks = [];
+        for (let block of await response.json()) {
+            if (typeof block == 'string')
+                blocks.push(block);
+            else if (typeof block == 'object')
+                blocks.push(createChart(block['xdata'], block['fts']));
+        }
+        return blocks;
+    }
 };
 
 const apiCmdsHandler = {
@@ -109,4 +118,24 @@ const apiCmdsHandler = {
             pageSize: pageSize
         }
     },
+    whitenova: (cmdArr, cmd) => {
+        let period = 0;
+        let full = false;
+        let idx = 1;
+        while (idx < cmdArr.length - 1) {
+            if (cmdArr[idx] == '-p')
+                period = parseInt(cmdArr[++idx]);
+            else if (cmdArr[idx] == '--full')
+                full = true;
+            idx++;
+        }
+        return {
+            cmd: cmd['cmd'],
+            options: {
+                login: cmdArr[cmdArr.length - 1],
+                period: period,
+                full: full
+            }
+        }
+    }
 };

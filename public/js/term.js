@@ -37,6 +37,8 @@ window.onload = () =>  {
     });
 
     inputTerm.focus();
+
+    // TODO long input lines
 };
 
 function executeCommand(command) {
@@ -47,8 +49,16 @@ function executeCommand(command) {
     addCmd2History(command);
     addCmd2Term(command);
     handleCmd(command).then((result) => {
-        if (result.length > 0)
-            addResult2Term(result);
+        if (typeof result === 'string' && result.length === 0)
+            return;
+        if (!Array.isArray(result))
+            result = [result];
+        for (let i = 0; i < result.length; i++) {
+            if (typeof result[i] === 'string')
+                addResult2Term(result[i]);
+            else
+                addChart2term(result[i]);
+        }
     });
     removeHints();
 }

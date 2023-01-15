@@ -1,0 +1,9 @@
+{{ info.login }}'s 15 days period: (Time zone: <define>{{ info.timezone }}</define>)
+  - Start: <string>{{ info.start_at }}</string>
+  - End: <string>{{ info.end_at }}</string>
+
+{{#each locations as |l|}}
+{{ l.begin_at }} -- {{ l.end_at }} -> <number>{{ l.duration }}</number> <ft_name>{{ l.host_name }}</ft_name>
+{{/each}}
+
+Total: {{analysis.totalTime}} {{#if analysis.whitenovaTime}}(<obj>{{analysis.whitenovaTime}}</obj>){{/if}}

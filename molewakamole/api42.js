@@ -49,7 +49,6 @@ class API42 {
         return this.URL + url + filtersString;
     }
 
-    // TODO
     async get(url, filters = [], multiRequest = false, amount = this.MAX_PAGE_SIZE) {
         return await this.updateToken().then(async () => {
             let data;
@@ -80,21 +79,29 @@ class API42 {
                 }
             }
             else {
-                // TODO
+                let page = 1;
                 data = [];
+                let fs, response;
+                while (true) {
+                    fs = [
+                        ...filters,
+                        `page[size]=${Math.min(amount, this.MAX_PAGE_SIZE)}`,
+                        `page[number]=${page}`
+                    ];
+                    response = await this._get(this.formatUrl(url, fs), header);
+                    data.push(...response);
+                    if (response.length < Math.min(amount, this.MAX_PAGE_SIZE))
+                        break;
+                    amount -= this.MAX_PAGE_SIZE;
+                    page++;
+                }
             }
             return data;
         });
-        // .catch(err => {
-        //     console.log(err);
-        //     return {error: err, status: 503};
-        // });
     }
 
-    // TODO
     async _get(url, header = {}) {
         console.log(url); // TODO remove
-        // console.log(header);
         const response = await fetch(url, {
             method: 'GET',
             headers: header,
