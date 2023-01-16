@@ -182,10 +182,13 @@ function handleTab(e) {
             let prevFlag = getFlag(cmd[cmdIdx - 1], c['flags']);
             if (prevFlag != null && prevFlag['value'] != null) { // If value is required
                 completeFlags = false;
-                if (prevFlag['value']['type'] == 'stringElement')
-                    for (let v of prevFlag['value']['elements'])
-                        if (v.toLowerCase().startsWith(flagNoCase))
+                if (prevFlag['value']['type'] == 'stringElement') {
+                    for (let v of prevFlag['value']['elements']) {
+                        if (v.toLowerCase().startsWith(flagNoCase)) {
                             available.push(v);
+                        }
+                    }
+                }
                 else if (prevFlag['value']['type'] == 'boolean')
                     available.push('true', 'false');
                 else if (prevFlag['value']['type'] == 'number')
@@ -194,9 +197,9 @@ function handleTab(e) {
                     return setHints(['&lt;string&gt;']);
                 else
                     return removeHints();
-            } // else, autocomplete flags
+            }
         }
-        if (completeFlags) {
+        if (completeFlags) { // Previous flag ended (or no previous flag) => Autocomplete flag
             let usedFlags = cmd.filter(c => c.startsWith('-'));
             for (let flag of c['flags']) {
                 if (cmd[cmdIdx] == '' || flag['flag'].toLowerCase().startsWith(flagNoCase))
@@ -206,7 +209,7 @@ function handleTab(e) {
         }
     }
 
-    // ? Hits for value?
+    // ? Hints for value?
 
     switch (available.length) {
         case 0:
