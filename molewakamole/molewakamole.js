@@ -49,7 +49,6 @@ class Molewakamole {
 
     async whitenova(req, res) {
         let options = req.body.options;
-        console.log(options);
 
         const period = DateUtils.whitenovaPeriod(options.period);
         const apiOptions = {
@@ -206,32 +205,15 @@ const parser = {
         return data;
     },
     'search': (data) => data,
-    'whitenova': (options, period, locations = [], corrections = [], events = []) => {
-        // TODO implement corrections
-        // TODO implement events
-        // TODO format data
-        // TODO show if whitenova reached
-        // TODO implement true whitenova
-        if (locations.length > 0) {
-            const begin_date = DateUtils.fromUTC(locations[0].begin_at);
-            if (begin_date < period.start) // If logged in before period
-                locations[0].begin_at = period.startStr;
-            
-            let lastEnd;
-            if (locations[locations.length - 1].end_at == null) // If still logged in
-                lastEnd = DateUtils.now();
-            else
-                lastEnd = DateUtils.fromUTC(locations[locations.length - 1].end_at);
-            if (lastEnd > period.end) // If logged out after period
-                locations[locations.length - 1].end_at = period.endStr;
-        }
+    // WHITENOVA
 
-        const periodHours = [];
-        for (let i = 0; i < period.days.length; i++)
-            periodHours[i] = 0;
+    'whitenova-locations': (options, period, locations) => {
+        const periodHours = new Array(DateUtils.daysInBetween(period.start, period.end)).fill(0);
         const log = [];
         let l, totalTime = 0;
         for (let i = 0; i < locations.length; i++) {
+            if (locations[i].end_at == null)
+                continue; // If still logged in, skip this location
             l = {
                 start: DateUtils.fromUTC(locations[i].begin_at),
                 end: DateUtils.fromUTC(locations[i].end_at)
@@ -247,21 +229,45 @@ const parser = {
                 host_name: parser.host(locations[i].host)
             });
 
-            // console.log("------------------")
-            // console.log(DateUtils.formatLocal(l.start, 'dd-MM-yyyy hh:mm:ss'))
-            // console.log(DateUtils.formatLocal(l.end, 'dd-MM-yyyy hh:mm:ss'))
-            // console.log("------------------")
+            totalTime += l.end - l.start;
 
             if (l.start_day == l.end_day) {
                 periodHours[l.start_day - period.start.getDate()] += l.duration;
-                totalTime += l.end - l.start;
             }
-            else {
-                // TODO
-                totalTime += 0;
+            else { // ! Untested
+                periodHours[l.start_day - period.start.getDate()] += (24 - l.start.getHours()) + l.start.getMinutes() / 60;
+                for (let j = l.start_day + 1; j < l.end_day; j++)
+                    periodHours[j - period.start.getDate()] += 24;
+                periodHours[l.end_day - period.start.getDate()] += l.end.getHours() + l.end.getMinutes() / 60;
             }
-            // TODO full report
         }
+        return {periodHours, log, totalTime};
+    },
+    'whitenova': (options, period, locations = [], corrections = [], events = []) => {
+        // TODO implement corrections
+        // TODO implement events
+        // TODO format data
+        // TODO show if whitenova reached
+
+        const {periodHours: realHours} = parser['whitenova-locations'](options, period, locations);
+
+        if (locations.length > 0) { // Special locations cases
+            const begin_date = DateUtils.fromUTC(locations[0].begin_at);
+            if (begin_date < period.start) // If logged in before period
+                locations[0].begin_at = period.startStr;
+            let lastEnd;
+            if (locations[locations.length - 1].end_at == null) { // If still logged in
+                lastEnd = DateUtils.now();
+            }
+            else // If logged out
+                lastEnd = DateUtils.fromUTC(locations[locations.length - 1].end_at);
+            if (lastEnd > period.end) // If end is after period
+                locations[locations.length - 1].end_at = period.endStr;
+            else
+                locations[locations.length - 1].end_at = DateUtils.format(lastEnd);
+        }
+
+        const {periodHours, log, totalTime} = parser['whitenova-locations'](options, period, locations);
 
         return {
             graph: {
@@ -273,15 +279,20 @@ const parser = {
                         color: Molewakamole.CSS['c-blue']
                     },
                     {
-                        name: 'Corrections',
-                        data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
-                        color: Molewakamole.CSS['c-orange']
-                    },
-                    {
-                        name: 'Events',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                        name: '"Official" whitenova',
+                        data: realHours,
                         color: Molewakamole.CSS['c-green']
-                    }
+                    },
+                    // {
+                    //     name: 'Corrections',
+                    //     data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
+                    //     color: Molewakamole.CSS['c-orange']
+                    // },
+                    // {
+                    //     name: 'Events',
+                    //     data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                    //     color: Molewakamole.CSS['c-green']
+                    // }
                 ]
             },
             whitenovaLocationData: {
