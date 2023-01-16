@@ -2,9 +2,8 @@ async function handleCmdAPI(cmdArr, cmd) {
     if (!apiCmdsHandler.hasOwnProperty(cmd['cmd']))
         return "<error>Error</error>: API method not implemented";
     const request = apiCmdsHandler[cmd['cmd']](cmdArr, cmd);
-    const responseHandler = apiResponseHandler[cmd['cmd']] ||  ['def'];
+    const responseHandler = apiResponseHandler[cmd['cmd']] || apiResponseHandler['def'];
 
-    console.log(request);
     const response = await makeRequestAPI(request);
     if (response.status != 200)
         return `<error>Error</error>: ${response.status} ${response.statusText}`;
