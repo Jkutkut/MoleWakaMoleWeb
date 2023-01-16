@@ -1,4 +1,8 @@
 class DateUtils {
+
+    static HOUR = 3600000; // 60 * 60 * 1000
+    static DAY = 24 * DateUtils.HOUR;
+
     static now() {
         const d = new Date();
         d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
@@ -28,9 +32,8 @@ class DateUtils {
     }
 
     static formatMillis(ms) {
-        const _24HOURS = 3600000; // 60 * 60 * 1000
-        const hh = Math.floor(ms / _24HOURS);
-        const mmss = DateUtils.format(DateUtils.fromMillis(ms % _24HOURS), "mm:ss");
+        const hh = Math.floor(ms / DateUtils.HOUR);
+        const mmss = DateUtils.format(DateUtils.fromMillis(ms % DateUtils.HOUR), "mm:ss");
         return hh + ":" + mmss;
     }
 
@@ -63,6 +66,11 @@ class DateUtils {
         const result = new Date(d.getTime());
         result.setDate(result.getDate() + days);
         return result;
+    }
+
+    static daysInBetween(d1, d2) {
+        const diff = d2 - d1;
+        return Math.abs(Math.floor(diff / DateUtils.DAY));
     }
 
     // Whitenova

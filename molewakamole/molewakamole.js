@@ -228,7 +228,7 @@ const parser = {
                 locations[locations.length - 1].end_at = DateUtils.format(lastEnd);
         }
 
-        const periodHours = new Array(15).fill(0); // TODO size based on period
+        const periodHours = new Array(DateUtils.daysInBetween(period.start, period.end)).fill(0);
         const log = [];
         let l, totalTime = 0;
         for (let i = 0; i < locations.length; i++) {
@@ -275,16 +275,16 @@ const parser = {
                         data: periodHours,
                         color: Molewakamole.CSS['c-blue']
                     },
-                    {
-                        name: 'Corrections',
-                        data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
-                        color: Molewakamole.CSS['c-orange']
-                    },
-                    {
-                        name: 'Events',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-                        color: Molewakamole.CSS['c-green']
-                    }
+                    // {
+                    //     name: 'Corrections',
+                    //     data: [0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
+                    //     color: Molewakamole.CSS['c-orange']
+                    // },
+                    // {
+                    //     name: 'Events',
+                    //     data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                    //     color: Molewakamole.CSS['c-green']
+                    // }
                 ]
             },
             whitenovaLocationData: {
