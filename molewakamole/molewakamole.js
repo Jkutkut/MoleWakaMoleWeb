@@ -205,12 +205,52 @@ const parser = {
         return data;
     },
     'search': (data) => data,
+    // WHITENOVA
+
+    'whitenova-locations': (options, period, locations) => {
+        const periodHours = new Array(DateUtils.daysInBetween(period.start, period.end)).fill(0);
+        const log = [];
+        let l, totalTime = 0;
+        for (let i = 0; i < locations.length; i++) {
+            if (locations[i].end_at == null)
+                continue; // If still logged in, skip this location
+            l = {
+                start: DateUtils.fromUTC(locations[i].begin_at),
+                end: DateUtils.fromUTC(locations[i].end_at)
+            };
+            l.start_day = l.start.getDate();
+            l.end_day = l.end.getDate();
+            l.duration = (l.end - l.start) / 3600000;
+
+            log.push({
+                begin_at: DateUtils.formatLocal(l.start, 'hh:mm:ss dd-MM-yyyy'),
+                end_at: DateUtils.formatLocal(l.end, 'hh:mm:ss dd-MM-yyyy'),
+                duration: DateUtils.formatMillis(l.end - l.start),
+                host_name: parser.host(locations[i].host)
+            });
+
+            totalTime += l.end - l.start;
+
+            if (l.start_day == l.end_day) {
+                periodHours[l.start_day - period.start.getDate()] += l.duration;
+            }
+            else { // ! Untested
+                periodHours[l.start_day - period.start.getDate()] += (24 - l.start.getHours()) + l.start.getMinutes() / 60;
+                for (let j = l.start_day + 1; j < l.end_day; j++)
+                    periodHours[j - period.start.getDate()] += 24;
+                periodHours[l.end_day - period.start.getDate()] += l.end.getHours() + l.end.getMinutes() / 60;
+            }
+        }
+        return {periodHours, log, totalTime};
+    },
     'whitenova': (options, period, locations = [], corrections = [], events = []) => {
         // TODO implement corrections
         // TODO implement events
         // TODO format data
         // TODO show if whitenova reached
-        // TODO implement true whitenova
+
+        const {periodHours: realHours} = parser['whitenova-locations'](options, period, locations);
+
         if (locations.length > 0) {
             const begin_date = DateUtils.fromUTC(locations[0].begin_at);
             if (begin_date < period.start) // If logged in before period
@@ -228,43 +268,7 @@ const parser = {
                 locations[locations.length - 1].end_at = DateUtils.format(lastEnd);
         }
 
-        const periodHours = new Array(DateUtils.daysInBetween(period.start, period.end)).fill(0);
-        const log = [];
-        let l, totalTime = 0;
-        for (let i = 0; i < locations.length; i++) {
-            l = {
-                start: DateUtils.fromUTC(locations[i].begin_at),
-                end: DateUtils.fromUTC(locations[i].end_at)
-            };
-            l.start_day = l.start.getDate();
-            l.end_day = l.end.getDate();
-            l.duration = (l.end - l.start) / 3600000;
-
-            log.push({
-                begin_at: DateUtils.formatLocal(l.start, 'hh:mm:ss dd-MM-yyyy'),
-                end_at: DateUtils.formatLocal(l.end, 'hh:mm:ss dd-MM-yyyy'),
-                duration: DateUtils.formatMillis(l.end - l.start),
-                host_name: parser.host(locations[i].host)
-            });
-
-            // console.log("------------------")
-            // console.log(DateUtils.formatLocal(l.start, 'dd-MM-yyyy hh:mm:ss'))
-            // console.log(DateUtils.formatLocal(l.end, 'dd-MM-yyyy hh:mm:ss'))
-            // console.log("------------------")
-
-            totalTime += l.end - l.start;
-
-            if (l.start_day == l.end_day) {
-                periodHours[l.start_day - period.start.getDate()] += l.duration;
-            }
-            else { // ! Untested
-                periodHours[l.start_day - period.start.getDate()] += (24 - l.start.getHours()) + l.start.getMinutes() / 60;
-                for (let j = l.start_day + 1; j < l.end_day; j++)
-                    periodHours[j - period.start.getDate()] += 24;
-                periodHours[l.end_day - period.start.getDate()] += l.end.getHours() + l.end.getMinutes() / 60;
-            }
-            // TODO full report
-        }
+        const {periodHours, log, totalTime} = parser['whitenova-locations'](options, period, locations);
 
         return {
             graph: {
@@ -274,6 +278,11 @@ const parser = {
                         name: 'Hours of activity',
                         data: periodHours,
                         color: Molewakamole.CSS['c-blue']
+                    },
+                    {
+                        name: '"Official" whitenova',
+                        data: realHours,
+                        color: Molewakamole.CSS['c-green']
                     },
                     // {
                     //     name: 'Corrections',
