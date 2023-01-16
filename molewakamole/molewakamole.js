@@ -49,7 +49,6 @@ class Molewakamole {
 
     async whitenova(req, res) {
         let options = req.body.options;
-        console.log(options);
 
         const period = DateUtils.whitenovaPeriod(options.period);
         const apiOptions = {
@@ -82,9 +81,6 @@ class Molewakamole {
             whitenovaLocationData,
             graph
         } = parser.whitenova(options, period, locations, corrections, events);
-
-        console.log(whitenovaLocationData);
-        console.log(graph);
 
         hb.render(
             "./views/api/whitenovaLocation.hbs",
@@ -219,19 +215,20 @@ const parser = {
             const begin_date = DateUtils.fromUTC(locations[0].begin_at);
             if (begin_date < period.start) // If logged in before period
                 locations[0].begin_at = period.startStr;
-            
+
             let lastEnd;
-            if (locations[locations.length - 1].end_at == null) // If still logged in
+            if (locations[locations.length - 1].end_at == null) { // If still logged in
                 lastEnd = DateUtils.now();
-            else
+            }
+            else // If logged out
                 lastEnd = DateUtils.fromUTC(locations[locations.length - 1].end_at);
-            if (lastEnd > period.end) // If logged out after period
+            if (lastEnd > period.end) // If end is after period
                 locations[locations.length - 1].end_at = period.endStr;
+            else
+                locations[locations.length - 1].end_at = DateUtils.format(lastEnd);
         }
 
-        const periodHours = [];
-        for (let i = 0; i < period.days.length; i++)
-            periodHours[i] = 0;
+        const periodHours = new Array(15).fill(0); // TODO size based on period
         const log = [];
         let l, totalTime = 0;
         for (let i = 0; i < locations.length; i++) {
