@@ -83,6 +83,9 @@ class Molewakamole {
             graph
         } = parser.whitenova(options, period, locations, corrections, events);
 
+        console.log(whitenovaLocationData);
+        console.log(graph);
+
         hb.render(
             "./views/api/whitenovaLocation.hbs",
             whitenovaLocationData
@@ -252,13 +255,16 @@ const parser = {
             // console.log(DateUtils.formatLocal(l.end, 'dd-MM-yyyy hh:mm:ss'))
             // console.log("------------------")
 
+            totalTime += l.end - l.start;
+
             if (l.start_day == l.end_day) {
                 periodHours[l.start_day - period.start.getDate()] += l.duration;
-                totalTime += l.end - l.start;
             }
-            else {
-                // TODO
-                totalTime += 0;
+            else { // ! Untested
+                periodHours[l.start_day - period.start.getDate()] += (24 - l.start.getHours()) + l.start.getMinutes() / 60;
+                for (let j = l.start_day + 1; j < l.end_day; j++)
+                    periodHours[j - period.start.getDate()] += 24;
+                periodHours[l.end_day - period.start.getDate()] += l.end.getHours() + l.end.getMinutes() / 60;
             }
             // TODO full report
         }
