@@ -251,11 +251,10 @@ const parser = {
 
         const {periodHours: realHours} = parser['whitenova-locations'](options, period, locations);
 
-        if (locations.length > 0) {
+        if (locations.length > 0) { // Special locations cases
             const begin_date = DateUtils.fromUTC(locations[0].begin_at);
             if (begin_date < period.start) // If logged in before period
                 locations[0].begin_at = period.startStr;
-
             let lastEnd;
             if (locations[locations.length - 1].end_at == null) { // If still logged in
                 lastEnd = DateUtils.now();
